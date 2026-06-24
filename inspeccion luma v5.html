@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Inspección Luma">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Inspección Eléctrica — Luma Energy</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --blue:#00457C;--dark:#002D52;--light:#E8F1F9;--red:#C00000;--red-bg:#FFF0F0;
+  --green:#186A3B;--green-bg:#EAF6EE;--gray:#6B7280;--gray-bg:#F5F6F8;
+  --border:#D1D9E0;--text:#1A1A2E;--orange:#D97706;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#EAEEF2;color:var(--text);min-height:100vh}
+
+/* ===== LOGIN ===== */
+#login{min-height:100vh;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+#login img{height:72px;border-radius:14px;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+#login h1{color:white;font-size:20px;font-weight:900;text-align:center;margin-bottom:6px}
+#login p{color:rgba(255,255,255,.5);font-size:12px;text-align:center;margin-bottom:32px}
+.login-box{background:white;border-radius:16px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.login-box h2{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px;text-align:center}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.login-field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:15px;background:var(--gray-bg);letter-spacing:2px;-webkit-appearance:none}
+.login-field input:focus{outline:none;border-color:var(--blue);background:white}
+.login-btn{width:100%;padding:14px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;margin-top:6px}
+.login-btn:active{opacity:.85}
+.login-error{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
+.login-user-info{font-size:12px;color:var(--gray);text-align:center;margin-top:12px}
+
+/* ===== MENU ===== */
+#menu{min-height:100vh;background:var(--dark);flex-direction:column;display:none}
+#menu.on{display:flex}
+.mtop{padding:36px 24px 16px;text-align:center}
+.mtop img{height:64px;border-radius:12px;margin-bottom:16px;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.mdiv{width:48px;height:3px;background:#00AEEF;margin:0 auto 14px;border-radius:2px}
+.mtop h1{color:white;font-size:18px;font-weight:800}
+.mtop p{color:rgba(255,255,255,.5);font-size:12px;margin-top:5px}
+.user-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border-radius:20px;padding:5px 14px;margin-top:10px;font-size:11px;color:rgba(255,255,255,.8)}
+.mcards{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
+.tcard{background:white;border-radius:16px;padding:22px 18px;cursor:pointer;display:flex;align-items:center;gap:16px;box-shadow:0 6px 24px rgba(0,0,0,.25);border:2px solid transparent;transition:transform .12s}
+.tcard:active{transform:scale(.97)}
+.tcard.rep{border-color:#F59E0B}.tcard.des{border-color:#8B5CF6}
+.tico{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.rep .tico{background:#FEF3C7}.des .tico{background:#EDE9FE}
+.tinfo h2{font-size:17px;font-weight:800;color:var(--dark)}
+.tinfo p{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.4}
+
+/* Nav tabs */
+.menu-tabs{display:flex;gap:8px;padding:0 16px 16px}
+.mtab{flex:1;padding:10px 8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:center}
+.mtab.act{background:rgba(255,255,255,.22);color:white}
+
+/* Referencias panel */
+#ref-panel{display:none;padding:0 16px 80px;flex:1;overflow-y:auto}
+#ref-panel.show{display:block}
+.ref-search{display:flex;gap:8px;margin-bottom:14px}
+.ref-search input{flex:1;padding:10px 14px;border:1.5px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.1);color:white;font-size:13px}
+.ref-search input::placeholder{color:rgba(255,255,255,.4)}
+.ref-search input:focus{outline:none;border-color:#00AEEF}
+.ref-cat{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);margin-bottom:8px;margin-top:14px}
+.ref-item{background:rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(255,255,255,.1)}
+.ref-item:active{background:rgba(255,255,255,.18)}
+.ref-item h4{font-size:13px;font-weight:700;color:white;margin-bottom:3px}
+.ref-item p{font-size:11px;color:rgba(255,255,255,.55);line-height:1.4}
+.ref-detail{background:white;border-radius:14px;padding:18px;margin-bottom:10px;display:none}
+.ref-detail.show{display:block}
+.ref-detail h3{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:10px}
+.ref-detail p{font-size:12px;line-height:1.6;color:#374151;margin-bottom:8px}
+.ref-back{background:var(--blue);color:white;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px}
+
+.mfoot{text-align:center;padding:16px;color:rgba(255,255,255,.2);font-size:11px}
+.logout-btn{display:block;width:calc(100% - 32px);margin:0 16px 16px;padding:11px;background:rgba(255,0,0,.2);color:rgba(255,255,255,.7);border:1px solid rgba(255,0,0,.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+
+/* ===== INSPECCION ===== */
+#insp{display:none}
+header{background:var(--blue);color:white;padding:12px 14px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.hrow{display:flex;align-items:center;gap:10px}
+.bback{background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+header img{height:28px;border-radius:4px;flex-shrink:0}
+.hbadge{margin-left:auto;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:800;white-space:nowrap;flex-shrink:0}
+.hbadge.rep{background:#F59E0B;color:white}.hbadge.des{background:#8B5CF6;color:white}
+header p{font-size:10px;opacity:.6;margin-top:2px}
+.wrap{max-width:580px;margin:0 auto;padding:14px 12px 80px}
+.stats{background:var(--dark);color:white;padding:11px 14px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between}
+.st{text-align:center}
+.stn{font-size:24px;font-weight:900;line-height:1}
+.stl{font-size:10px;opacity:.55;margin-top:2px}
+.cg{color:#4ADE80}.cr{color:#F87171}.cy{color:#FBBF24}.cc{color:#9CA3AF}
+.card{background:white;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,70,.08);overflow:hidden}
+.ch{background:var(--blue);color:white;padding:10px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.cb{padding:16px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.frow.full{grid-template-columns:1fr}
+.fl{font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;display:block}
+input[type=text],input[type=date],textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;background:var(--gray-bg);-webkit-appearance:none}
+input:focus,textarea:focus{outline:none;border-color:var(--blue);background:white}
+textarea{min-height:80px;resize:vertical}
+.perito-row{display:flex;gap:8px;align-items:flex-end}
+.perito-row input{flex:1}
+.buscar-btn{padding:9px 14px;background:var(--blue);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.buscar-btn:active{opacity:.85}
+.slbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--blue);padding:8px 0 5px;border-bottom:1px solid var(--light);margin:6px 0 10px}
+.ci{border:1.5px solid var(--border);border-radius:9px;padding:12px 13px;margin-bottom:10px;transition:all .15s}
+.ci.ok{background:var(--green-bg);border-color:var(--green)}
+.ci.nc{background:var(--red-bg);border-color:var(--red)}
+.ci.na{background:#F8F8F8;border-color:#CCC;opacity:.6}
+.cdesc{font-size:13px;line-height:1.45;margin-bottom:5px;font-weight:500}
+.ccode{font-size:10px;color:var(--gray);margin-bottom:9px;line-height:1.4}
+.ibtns{display:flex;gap:6px;margin-bottom:9px}
+.ibtn{flex:1;padding:9px 4px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;background:white;color:var(--gray);text-align:center}
+.ibtn.ac{background:var(--green);border-color:var(--green);color:white}
+.ibtn.anc{background:var(--red);border-color:var(--red);color:white}
+.ibtn.ana{background:#999;border-color:#999;color:white}
+.iex{display:none;margin-bottom:9px}.iex.show{display:block}
+.iexl{font-size:11px;color:var(--gray);margin-bottom:4px;font-weight:600}
+.iex input{font-size:13px;padding:8px 11px;background:white}
+.pwrap{margin-top:7px}
+.pbtn{display:flex;align-items:center;gap:8px;background:#E8F4FF;border:1.5px solid #00AEEF;border-radius:8px;padding:10px 13px;cursor:pointer;font-size:12px;color:var(--blue);font-weight:700;width:100%}
+.pgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.ptw{position:relative;display:inline-block}
+.pth{width:74px;height:74px;border-radius:8px;object-fit:cover;border:2px solid var(--border)}
+.pdel{position:absolute;top:-6px;right:-6px;background:var(--red);color:white;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;line-height:22px;text-align:center;font-weight:700}
+
+/* Comentarios con fotos */
+.com-photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.com-photo-wrap{position:relative;display:inline-block}
+.com-photo{width:74px;height:74px;border-radius:8px;object-fit:cover;border:2px solid var(--border)}
+.com-del{position:absolute;top:-6px;right:-6px;background:var(--red);color:white;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;line-height:22px;text-align:center;font-weight:700}
+
+/* Resultado y botones */
+.resbtns{display:flex;gap:8px}
+.rbtn{flex:1;padding:14px;border:2px solid var(--border);border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;background:white;color:var(--gray);text-align:center}
+.rbtn.act{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.bprev{width:100%;padding:16px;background:var(--blue);color:white;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;display:none}
+
+/* LIMPIAR — prominente */
+.blimpiar{width:100%;padding:14px;background:#FEF3C7;color:#92400E;border:2px solid #F59E0B;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.blimpiar:active{background:#FDE68A}
+
+/* ===== PREVIEW ===== */
+#prev{display:none;background:#F0F2F5;min-height:100vh}
+.prevh{background:var(--dark);color:white;padding:13px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.prevh img{height:28px;border-radius:4px}
+.prevh span{margin-left:8px;font-weight:700;font-size:14px}
+.pwrap2{max-width:620px;margin:0 auto;padding:16px 12px 90px}
+.pwarn{background:#FEF9C3;border:1px solid #EAB308;border-radius:9px;padding:10px 14px;font-size:12px;color:#854D0E;text-align:center;margin-bottom:14px}
+.rpt-header{background:var(--dark);border-radius:14px;padding:24px 20px;margin-bottom:14px;color:white;text-align:center}
+.rpt-agency{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.6);margin-bottom:3px}
+.rpt-title{font-size:18px;font-weight:900}
+.rpt-subtitle{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+.rpt-badge{display:inline-block;background:var(--red);color:white;font-size:13px;font-weight:900;padding:7px 20px;border-radius:20px;margin-top:14px}
+.rpt-section{background:white;border-radius:12px;padding:18px 16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,70,.07)}
+.rpt-sec-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--blue);border-bottom:2px solid var(--light);padding-bottom:8px;margin-bottom:12px}
+.rpt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F0F2F5;font-size:13px;gap:8px}
+.rpt-row:last-child{border-bottom:none}
+.rpt-row span:first-child{color:var(--gray);font-weight:600;flex-shrink:0}
+.def-card{border:1.5px solid #E5E7EB;border-radius:11px;overflow:hidden;margin-bottom:12px}
+.def-header{background:#FEF2F2;padding:12px 14px;border-bottom:1px solid #FECACA}
+.def-num{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--red);margin-bottom:3px}
+.def-name{font-size:13px;font-weight:800;color:#1F2937;line-height:1.35}
+.def-code{font-size:10px;color:var(--gray);margin-top:4px}
+.def-body{padding:12px 14px}
+.def-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);margin-bottom:4px}
+.def-text{font-size:12px;line-height:1.55;color:#374151;margin-bottom:10px}
+.def-sep{height:1px;background:#F0F2F5;margin:10px 0}
+.def-photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.def-photo{width:90px;height:90px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border)}
+.def-accion{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 12px;margin-top:10px}
+.def-accion-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--green);margin-bottom:4px}
+.def-accion-text{font-size:12px;line-height:1.55;color:#166534}
+.rpt-footer{background:white;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #E5E7EB;text-align:center}
+.rpt-footer p{font-size:11px;color:var(--gray);line-height:1.6}
+
+/* Botones de acción en preview */
+.benviar{width:100%;padding:16px;background:var(--blue);color:white;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.benviar:active{opacity:.85}
+.bdescargar{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.bdescargar:active{opacity:.85}
+.bback2{width:100%;padding:12px;background:white;color:var(--gray);border:1.5px solid var(--border);border-radius:9px;font-size:13px;cursor:pointer;margin-bottom:10px}
+
+.geo-info{font-size:11px;color:var(--gray);margin-top:4px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#186A3B;color:white;padding:12px 24px;border-radius:9px;font-size:13px;font-weight:700;z-index:999;display:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+
+/* Modal de confirmacion propio (reemplaza confirm() nativo, bloqueado por politicas de Edge corporativo) */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.show{display:flex}
+.modal-box{background:white;border-radius:16px;padding:24px 22px;max-width:340px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.4);text-align:center}
+.modal-box p{font-size:15px;color:var(--text);margin-bottom:20px;line-height:1.5}
+.modal-btns{display:flex;gap:10px}
+.modal-btn{flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer}
+.modal-btn.cancelar{background:#F1F3F5;color:var(--gray)}
+.modal-btn.confirmar{background:var(--red);color:white}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect width='120' height='40' rx='8' fill='%2300457C'/%3E%3Ctext x='60' y='27' font-family='Arial' font-size='18' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E" alt="Luma Energy">
+  <h1>Inspección Eléctrica</h1>
+  <p>Columnas y Bases de Medidores · Puerto Rico</p>
+  <div class="login-box">
+    <h2>🔒 Acceso Seguro</h2>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="pwd-input" placeholder="••••" maxlength="10" inputmode="numeric" pattern="[0-9]*" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+      <p style="font-size:11px;color:var(--gray);margin-top:6px;text-align:center">Use solo números</p>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error">⛔ Contraseña incorrecta. Intente nuevamente.</div>
+    <div class="login-user-info" id="login-user-info"></div>
+  </div>
+</div>
+
+<!-- ===== MENU ===== -->
+<div id="menu">
+  <div class="mtop">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect width='120' height='40' rx='8' fill='%2300457C'/%3E%3Ctext x='60' y='27' font-family='Arial' font-size='18' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E" alt="Luma Energy">
+    <div class="mdiv"></div>
+    <h1>Inspección Eléctrica</h1>
+    <p>Foreman: Angel Melendez &nbsp;·&nbsp; Supervisor: Luis Alicea</p>
+    <div class="user-pill" id="user-pill">👤 —</div>
+  </div>
+  <div class="menu-tabs">
+    <button class="mtab act" id="tab-insp" onclick="showMenuTab('insp')">🔧 Inspecciones</button>
+    <button class="mtab" id="tab-ref" onclick="showMenuTab('ref')">📋 Referencias</button>
+  </div>
+  <div class="mcards" id="menu-cards">
+    <div class="tcard rep" onclick="abrir('rep')">
+      <div class="tico">🔧</div>
+      <div class="tinfo"><h2>Reparación</h2><p>Instalación reparada o modificada. Se inspeccionan los trabajos realizados.</p></div>
+    </div>
+    <div class="tcard des" onclick="abrir('des')">
+      <div class="tico">📅</div>
+      <div class="tinfo"><h2>Desuso +1 Año</h2><p>Sin servicio por más de un año. Debe cumplir con todos los requisitos actuales.</p></div>
+    </div>
+  </div>
+  <div id="ref-panel">
+    <div class="ref-search">
+      <input type="text" id="ref-q" placeholder="Buscar artículo o patrón..." oninput="filtrarRef()">
+    </div>
+    <div id="ref-list"></div>
+    <div class="ref-detail" id="ref-detail">
+      <button class="ref-back" onclick="cerrarRef()">← Volver</button>
+      <h3 id="ref-detail-title"></h3>
+      <p id="ref-detail-body"></p>
+    </div>
+  </div>
+  <button class="logout-btn" onclick="logout()">🚪 Cerrar sesión</button>
+  <div class="mfoot">Luma Energy · Puerto Rico</div>
+</div>
+
+<!-- ===== INSPECCION ===== -->
+<div id="insp">
+<header>
+  <div class="hrow">
+    <button class="bback" onclick="irMenu()">&#8592;</button>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='26' viewBox='0 0 80 26'%3E%3Crect width='80' height='26' rx='5' fill='rgba(255,255,255,0.2)'/%3E%3Ctext x='40' y='18' font-family='Arial' font-size='12' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E" alt="Luma">
+    <div>
+      <div style="font-size:13px;font-weight:700">Inspección Eléctrica</div>
+      <p id="huser">Inspector: —</p>
+    </div>
+    <div class="hbadge" id="hbadge"></div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="stats">
+    <div class="st"><div class="stn cg" id="cc">0</div><div class="stl">CUMPLE</div></div>
+    <div class="st"><div class="stn cr" id="cnc">0</div><div class="stl">NO CUMPLE</div></div>
+    <div class="st"><div class="stn cc" id="cna">0</div><div class="stl">N/A</div></div>
+    <div class="st"><div class="stn cy" id="cp">0</div><div class="stl">PENDIENTE</div></div>
+  </div>
+  <div class="card">
+    <div class="ch">Datos de la Inspección</div>
+    <div class="cb">
+      <div class="frow"><div><span class="fl">No. Certificación</span><input type="text" id="cert" placeholder="CAY-001-VI-2026"></div><div><span class="fl">Fecha</span><input type="date" id="fecha"></div></div>
+      <div class="frow full">
+        <span class="fl">Perito Electricista</span>
+        <div class="perito-row">
+          <input type="text" id="licencia" placeholder="No. Licencia" style="max-width:120px">
+          <button class="buscar-btn" onclick="buscarPerito()">🔍 Buscar</button>
+          <input type="text" id="perito" placeholder="Nombre del perito" style="flex:2">
+        </div>
+      </div>
+      <div class="geo-info" id="geo-info">📍 Geolocalización: obteniendo...</div>
+      <div class="frow full" style="margin-top:8px">
+        <span class="fl">Coordenadas (editar manualmente si es necesario)</span>
+        <input type="text" id="geo-manual" placeholder="Ej: 18.220833, -66.590149" oninput="actualizarGeoManual()">
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch" id="cl-titulo">Lista de Cotejo</div>
+    <div class="cb" id="cl-body"></div>
+  </div>
+  <div class="card">
+    <div class="ch">Comentarios Adicionales</div>
+    <div class="cb">
+      <textarea id="comentarios" placeholder="Observaciones adicionales o deficiencias no listadas..."></textarea>
+      <input type="file" accept="image/*" id="fi-com" style="display:none" onchange="addComFoto(this)">
+      <button class="pbtn" style="margin-top:10px" onclick="document.getElementById('fi-com').click()">📷 Foto de comentario</button>
+      <div class="com-photos" id="com-photos"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch">Resultado</div>
+    <div class="cb">
+      <div class="resbtns"><button class="rbtn" id="btnr" onclick="setRes()">⛔ RECHAZADA</button></div>
+      <p style="font-size:11px;color:var(--gray);margin-top:10px;text-align:center">Solo se genera informe cuando la certificación es rechazada.</p>
+    </div>
+  </div>
+  <button class="bprev" id="bprev" onclick="irPrev()">👁 Ver resumen y enviar</button>
+  <button class="blimpiar" onclick="limpiar()">🗑️ LIMPIAR FORMULARIO</button>
+</div>
+</div>
+
+<!-- ===== PREVIEW ===== -->
+<div id="prev">
+<div class="prevh">
+  <button class="bback" onclick="irInsp()">&#8592;</button>
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='26' viewBox='0 0 80 26'%3E%3Crect width='80' height='26' rx='5' fill='rgba(255,255,255,0.2)'/%3E%3Ctext x='40' y='18' font-family='Arial' font-size='12' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E" alt="Luma">
+  <span>Informe de Rechazo</span>
+</div>
+<div class="pwrap2">
+  <div class="pwarn">⚠️ Revise cuidadosamente antes de enviar.</div>
+  <div id="prev-content"></div>
+  <button class="benviar" onclick="enviar()">🖨️ Generar Informe (Imprimir/PDF)</button>
+  <p style="font-size:11px;color:var(--gray);text-align:center;margin:-4px 0 10px">Se abrirá el informe y el diálogo de impresión. Elija <strong>"Guardar como PDF"</strong>, luego compártalo o adjúntelo al correo que se abrirá con destinatario angel.melendez@lumapr.com.</p>
+  <button class="bdescargar" onclick="descargar()">📂 Abrir de Nuevo (sin correo)</button>
+  <button class="bback2" onclick="irInsp()">← Volver y corregir</button>
+  <button class="blimpiar" onclick="limpiar()">🗑️ LIMPIAR FORMULARIO</button>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <p id="modal-texto">¿Confirmar?</p>
+    <div class="modal-btns">
+      <button class="modal-btn cancelar" onclick="modalCancelar()">Cancelar</button>
+      <button class="modal-btn confirmar" id="modal-btn-confirmar" onclick="modalConfirmar()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== USUARIOS =====
+const USERS = {
+  '282530': {nombre:'Angel Melendez', rol:'Foreman', email:'angel.melendez@lumapr.com'},
+  '2001': {nombre:'Inspector 2', rol:'Inspector', email:'angel.melendez@lumapr.com'},
+  '2002': {nombre:'Inspector 3', rol:'Inspector', email:'angel.melendez@lumapr.com'},
+};
+let currentUser = null;
+
+function doLogin(){
+  const pwd = document.getElementById('pwd-input').value.trim();
+  const err = document.getElementById('login-error');
+  const info = document.getElementById('login-user-info');
+  if(USERS[pwd]){
+    currentUser = {...USERS[pwd], pwd};
+    err.style.display='none';
+    info.textContent='Bienvenido, '+currentUser.nombre;
+    setTimeout(()=>{
+      document.getElementById('login').style.display='none';
+      document.getElementById('menu').className='on';
+      document.getElementById('user-pill').textContent='👤 '+currentUser.nombre+' · '+currentUser.rol;
+    },600);
+  } else {
+    err.style.display='block';
+    document.getElementById('pwd-input').value='';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+function logout(){
+  confirmarAccion('¿Cerrar sesión?', ()=>{
+    currentUser=null;
+    document.getElementById('pwd-input').value='';
+    document.getElementById('login-error').style.display='none';
+    document.getElementById('login-user-info').textContent='';
+    document.getElementById('menu').className='';
+    document.getElementById('login').style.display='flex';
+  });
+}
+
+// ===== REFERENCIAS =====
+const REFS = [
+  {cat:'Patrones Luma Energy', id:'m5a', titulo:'Patrón M-5-A — Alturas Wire Holder', texto:'Altura mínima del wire holder al suelo: 19\'0\" en área de tránsito vehicular, 12\'6\" en acceso vehicular privado, 10\'6\" en área peatonal. El wire holder debe tener mínimo 18 pulgadas desde el borde superior del techo o columna. Lista de Cotejo Luma Energy Núm. 4375.044.'},
+  {cat:'Patrones Luma Energy', id:'k731', titulo:'Patrón K-7-3-1 — Columna y Base de Medidor', texto:'Columna de concreto: mínimo 8\'0\" de altura, 16 pulgadas de ancho, 9 pulgadas de profundidad. Sin perforaciones, tuberías ajenas, cajas de empalmes. Área de trabajo frente al contador: mínimo 3\'0\" × 3\'0\", pendiente máxima 2%. Columna a no más de 3 pies de la colindancia con la calle.'},
+  {cat:'Patrones Luma Energy', id:'urd29', titulo:'Patrón URD-29 — Conduit PVC Subterráneo', texto:'La tubería conduit subterránea debe ser PVC Schedule 40 con diámetro mínimo de 2 pulgadas. Profundidad mínima de entierro según NEC Tabla 300.5. Reglamento Complementario Artículo IV.C.'},
+  {cat:'Reglamento Complementario', id:'rc-iid4', titulo:'Art. II.D.4 — Certificación Obligatoria', texto:'Es requisito indispensable que todas las instalaciones eléctricas, nuevas, modificadas o reparadas, se certifiquen por un perito electricista colegiado y sean inspeccionadas por un inspector autorizado antes de conectarse al sistema eléctrico.'},
+  {cat:'Reglamento Complementario', id:'rc-iid7', titulo:'Art. II.D.7 — Desuso Mayor de 1 Año', texto:'Todas las solicitudes de servicio para edificios que estén o hayan estado desocupados por más de un (1) año, requerirán el permiso de uso y la certificación eléctrica previo a la conexión del servicio.'},
+  {cat:'Reglamento Complementario', id:'rc-ivc18', titulo:'Art. IV.C.18 — Tubo de Soporte Mínimo 2\"', texto:'Los soportes de tubo de acero galvanizado para tomas aéreas deberán tener un diámetro no menor de dos (2) pulgadas. Deben estar afianzados por abrazaderas adecuadas y aprobadas por la Autoridad.'},
+  {cat:'Reglamento Complementario', id:'rc-ivd14', titulo:'Art. IV.D.14 — Ubicación Columna', texto:'La columna estará ubicada dentro del terreno del solicitante a una distancia no mayor de 3 pies de la colindancia con la calle. El frente del contador quedará en dirección a la calle.'},
+  {cat:'Reglamento Complementario', id:'rc-ivk2', titulo:'Art. IV.K.2 — Caja del Medidor', texto:'La caja del medidor debe ser de acero galvanizado a prueba de intemperie, de tipo aprobado, ancho máximo 16 pulgadas, con mínimo 4 pulgadas de concreto hacia ambos lados. Las bases (muelas) deben estar en buenas condiciones, sin daños mecánicos ni corrosión.'},
+  {cat:'Reglamento Complementario', id:'rc-ivo4', titulo:'Art. IV.O.4 — Altura del Medidor', texto:'Los contadores se instalarán a una altura no mayor de 7 pies y no menor de 5½ pies sobre el nivel del suelo desde donde se han de leer o inspeccionar.'},
+  {cat:'Reglamento Complementario', id:'rc-viig', titulo:'Art. VII.G — Varilla de Tierra', texto:'El electrodo de tierra consiste de una varilla de acero de 8 pies de largo por 5/8 pulgada de diámetro, revestida de cobre. La varilla debe instalarse 6 pulgadas bajo el nivel del suelo. El conductor no debe quedar expuesto.'},
+  {cat:'NEC — CEPR', id:'nec-23024', titulo:'NEC Art. 230.24 — Clearances Acometida', texto:'Service-drop conductors minimum clearance from grade: 10 ft over areas accessible only to pedestrians, 12 ft over residential driveways, 18 ft over public streets subject to truck traffic.'},
+  {cat:'NEC — CEPR', id:'nec-23043', titulo:'NEC Art. 230.43 — Tubo Mínimo 2\"', texto:'Rigid metal conduit used as service entrance raceway shall not be smaller than metric designator 53 (trade size 2). Secured with approved straps at intervals not exceeding 10 ft.'},
+  {cat:'NEC — CEPR', id:'nec-25066', titulo:'NEC Art. 250.66 — Calibre Conductor Tierra', texto:'The size of the grounding electrode conductor shall not be less than given in Table 250.66, sized to the largest service-entrance conductor or equivalent for paralleled conductors.'},
+  {cat:'NEC — CEPR', id:'nec-110-26', titulo:'NEC Art. 110.26 — Espacio de Trabajo', texto:'Working space minimum depth: 3 ft for equipment rated 0-150V to ground. Minimum width: 30 inches or width of equipment, whichever is greater. Minimum height: 6.5 ft.'},
+];
+
+function showMenuTab(t){
+  document.getElementById('tab-insp').className='mtab'+(t==='insp'?' act':'');
+  document.getElementById('tab-ref').className='mtab'+(t==='ref'?' act':'');
+  document.getElementById('menu-cards').style.display=t==='insp'?'flex':'none';
+  const rp=document.getElementById('ref-panel');
+  rp.className='';
+  if(t==='ref'){rp.classList.add('show');renderRefs('');}
+}
+
+function renderRefs(q){
+  const el=document.getElementById('ref-list');
+  document.getElementById('ref-detail').className='ref-detail';
+  el.style.display='block';
+  const filtrado=q?REFS.filter(r=>r.titulo.toLowerCase().includes(q.toLowerCase())||r.texto.toLowerCase().includes(q.toLowerCase())):REFS;
+  const cats=[...new Set(filtrado.map(r=>r.cat))];
+  el.innerHTML=cats.map(cat=>`<div class="ref-cat">${cat}</div>${filtrado.filter(r=>r.cat===cat).map(r=>`<div class="ref-item" onclick="verRef('${r.id}')"><h4>${r.titulo}</h4><p>${r.texto.substring(0,80)}...</p></div>`).join('')}`).join('');
+}
+
+function filtrarRef(){renderRefs(document.getElementById('ref-q').value)}
+
+function verRef(id){
+  const r=REFS.find(x=>x.id===id);if(!r)return;
+  document.getElementById('ref-list').style.display='none';
+  const d=document.getElementById('ref-detail');
+  d.className='ref-detail show';
+  document.getElementById('ref-detail-title').textContent=r.titulo;
+  document.getElementById('ref-detail-body').textContent=r.texto;
+}
+function cerrarRef(){document.getElementById('ref-detail').className='ref-detail';document.getElementById('ref-list').style.display='block';}
+
+// ===== GEOLOCALIZACIÓN =====
+let geoData = null;
+function obtenerGeo(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      geoData={lat:pos.coords.latitude.toFixed(6),lng:pos.coords.longitude.toFixed(6),acc:pos.coords.accuracy.toFixed(0)};
+      document.getElementById('geo-info').textContent='📍 Automática: '+geoData.lat+', '+geoData.lng+' (±'+geoData.acc+'m)';
+      const manualEl=document.getElementById('geo-manual');
+      if(manualEl && !manualEl.value) manualEl.value=geoData.lat+', '+geoData.lng;
+    },err=>{
+      document.getElementById('geo-info').textContent='📍 Geolocalización automática no disponible — ingrese coordenadas manualmente abajo';
+      geoData=null;
+    },{timeout:10000});
+  } else {
+    document.getElementById('geo-info').textContent='📍 No soportado — ingrese coordenadas manualmente abajo';
+  }
+}
+
+function actualizarGeoManual(){
+  const v=document.getElementById('geo-manual').value.trim();
+  if(!v){geoData=geoData;return}
+  const parts=v.split(',').map(p=>p.trim());
+  if(parts.length===2 && !isNaN(parseFloat(parts[0])) && !isNaN(parseFloat(parts[1]))){
+    geoData={lat:parts[0],lng:parts[1],acc:'manual'};
+  }
+}
+
+// ===== DATOS =====
+const DEFS = {"rep":[{"cat":"TRABAJOS REALIZADOS","items":[
+  {"id":"r_conduleto","desc":"El tubo/conduleto reparado o sustituido es rígido galvanizado con diámetro mínimo de 2 pulgadas.","codigo":"Reglamento Complementario Sección IV, Art. D.6 y Art. F.4 · NEC Art. 230.43","inp":false,"defName":"DIÁMETRO DE CONDULETO/TUBO INSUFICIENTE (MENOR DE 2 PULGADAS)","ceprArt":"Sección IV, Artículo D, Inciso 6 / Artículo F, Inciso 4 — Reglamento Complementario AEE/LUMA","ceprText":"El diámetro de toda la tubería asociada a un servicio (aéreo o soterrado) no será menor de dos (2) pulgadas. Los soportes de tubo de acero galvanizado para tomas aéreas deberán tener diámetro y espesor adecuado para soportar la tensión de la toma sin doblarse, afianzados por abrazaderas aprobadas por la Autoridad.","necArt":"Artículo 230.43 — National Electrical Code","necText":"Service-entrance conductors shall be installed using one of the wiring methods recognized in 230.43 (rigid metal conduit, IMC, EMT, PVC, among others), sized per the conductor ampacity requirements of this Code.","accion":"Sustituir el tubo/conduleto por uno de acero rígido galvanizado con diámetro mínimo de 2 pulgadas, debidamente afianzado a la columna mediante abrazaderas aprobadas, conforme al Reglamento Complementario Sección IV, Artículos D y F."},
+  {"id":"r_bonding","desc":"No hay múltiples conductores en el mismo terminal del bonding jumper o del neutral (multitapping).","codigo":"CEPR Art. 250.102 · NEC Art. 110.14(A) / 408.41","inp":false,"defName":"MÚLTIPLES CONDUCTORES EN UN MISMO TERMINAL (MULTITAPPING)","ceprArt":"Artículo 250.102 / Artículo VII.D — Reglamento Complementario","ceprText":"El conductor de enlace de conexión a tierra del equipo debe conectarse individualmente al terminal designado para ese propósito. Reglamento Complementario, Artículo VII.D.","necArt":"Artículos 110.14(A) / 408.41 — National Electrical Code","necText":"NEC 110.14(A): Terminals for more than one conductor shall be so identified; a terminal not so identified shall be used for only one conductor. NEC 408.41, Grounded Conductor Terminations: Each grounded (neutral) conductor shall terminate within the panelboard in an individual terminal that is not also used for another conductor, salvo que el terminal esté identificado para conexión de más de un conductor (conductores en paralelo).","accion":"Separar los conductores asignando un solo conductor por terminal, especialmente el conductor neutral. Utilizar conectores de derivación aprobados y listados para conexiones múltiples cuando sea necesario."},
+  {"id":"r_muelas","desc":"Las muelas (contactos de la base del contador) están en buen estado, sin daños, corrosión ni contactos abiertos.","codigo":"Reglamento Complementario Sección IV, Art. K.1-2 · NEC Art. 110.12(B) / 230.66","inp":false,"defName":"MUELAS (CONTACTOS DE BASE DEL CONTADOR) DAÑADAS O CONTACTOS ABIERTOS","ceprArt":"Sección IV, Artículo K, Incisos 1 y 2 — Reglamento Complementario AEE/LUMA","ceprText":"La Autoridad aprobará únicamente monturas preparadas con bases de metal o cajas de metal para contadores provistas de enchufes para contadores en instalaciones monofásicas y trifásicas. La base o bases y cajas de metal para contadores suministradas por el cliente deberán construirse de acero galvanizado y a prueba de intemperie, de un tipo aprobado por la Autoridad.","necArt":"Artículos 110.12(B) / 230.66 — National Electrical Code","necText":"NEC 110.12(B), Integrity of Electrical Equipment and Connections: Internal parts of electrical equipment, including busbars, wiring terminals, insulators, and other surfaces, shall not be damaged or contaminated. There shall be no damaged parts that may adversely affect safe operation or mechanical strength, such as parts that are broken, bent, cut, or deteriorated by corrosion, chemical action, or overheating. NEC 230.66: Individual meter socket enclosures shall be listed and rated for the voltage and ampacity of the service.","accion":"Sustituir las muelas (bases del contador) que presenten contactos abiertos, rotos, doblados, cortados, quemados o deteriorados por corrosión, por unas nuevas de acero galvanizado de tipo aprobado por Luma Energy. Los contactos deben hacer conexión firme y segura con el medidor, conforme al Reglamento Complementario Sección IV, Artículo K, y NEC Artículo 110.12(B)."},
+  {"id":"r_tierra","desc":"Varilla de puesta a tierra correctamente instalada, 6 pulgadas bajo el suelo, conductor no expuesto.","codigo":"CEPR Art. 250.52 · NEC Art. 250.52/250.53 · Reg. Comp. Art. VII.G","inp":true,"inpLbl":"Calibre conductor: ___ | Color: ___","inpId":"inp_r_tierra","defName":"ELECTRODO (VARILLA) DE PUESTA A TIERRA DEFICIENTE O CONDUCTOR EXPUESTO","ceprArt":"Artículo 250.52 / Artículo VII.G — Reglamento Complementario","ceprText":"El electrodo de tierra consiste de una varilla de 5/8\" × 8 pies de acero revestido de cobre, instalada 6 pulgadas bajo el nivel del suelo. El conductor no debe quedar expuesto.","necArt":"Artículo 250.52(A)(5) / 250.53(G) — National Electrical Code","necText":"Rod electrodes shall be not less than 5/8 in. diameter and not less than 8 ft in length. Rod electrodes shall be embedded below permanent moisture level.","accion":"Instalar varilla de 5/8\" × 8 pies a 6 pulgadas bajo el suelo. Proteger el conductor en toda su extensión. Calibre según Tabla 250.66 del NEC."},
+  {"id":"r_cal_tierra","desc":"Calibre del conductor de puesta a tierra adecuado según la Tabla 250.66.","codigo":"CEPR Art. 250.66 · NEC Tabla 250.66","inp":false,"defName":"CALIBRE DE CONDUCTOR DE PUESTA A TIERRA INCORRECTO","ceprArt":"Artículo 250.66 / Artículo VII.C — Reglamento Complementario","ceprText":"El conductor de puesta a tierra será de cobre con calibre no menor al establecido en la Tabla 250.66.","necArt":"Artículo 250.66 / Tabla 250.66 — National Electrical Code","necText":"The size of the grounding electrode conductor shall not be less than given in Table 250.66, sized to the largest service-entrance conductor.","accion":"Sustituir el conductor por cobre del calibre correcto según Tabla 250.66."},
+  {"id":"r_calibre","desc":"Calibre de conductores sustituidos concuerda con el breaker y la certificación eléctrica.","codigo":"CEPR Art. 230.23 · NEC Art. 230.23 / 310.15","inp":true,"inpLbl":"Calibre lado fuente: ___ | Lado carga: ___","inpId":"inp_r_cal","defName":"CALIBRE DE CONDUCTORES NO CORRESPONDE AL BREAKER O A LA CERTIFICACIÓN","ceprArt":"Artículo 230.23 / Artículo IV.G — Reglamento Complementario","ceprText":"Los conductores de acometida deben tener suficiente ampacidad para la carga. Reglamento Complementario, Artículo IV.G.4.","necArt":"Artículo 230.23 / 310.15 — National Electrical Code","necText":"Service-entrance conductors shall have adequate ampacity. Not smaller than 8 AWG copper or 6 AWG aluminum.","accion":"Sustituir los conductores por el calibre adecuado según la carga del servicio y el breaker, conforme a NEC 310.15."},
+  {"id":"r_colores","desc":"Cumplimiento con código de colores en los conductores reparados o sustituidos.","codigo":"CEPR Art. 250.119 · NEC Art. 250.119 / 200.6","inp":false,"defName":"INCUMPLIMIENTO CON CÓDIGO DE COLORES DE CONDUCTORES","ceprArt":"Artículo 250.119 / Artículo V.B.4 — Reglamento Complementario","ceprText":"Neutral: blanco o gris claro. Tierra: verde con o sin rayas amarillas, o desnudo. Calibre #4 o mayor permite cable negro con cinta adhesiva del color correcto.","necArt":"Artículos 250.119 / 200.6 — National Electrical Code","necText":"Equipment grounding conductors shall be green or green with yellow stripes. Neutral conductors No. 6 AWG or smaller shall be white or gray.","accion":"Identificar todos los conductores conforme al código de colores. Corregir según NEC 250.119 y Reglamento Complementario V.B.4."},
+  {"id":"r_breaker","desc":"Capacidad del breaker corresponde a la instalación reparada.","codigo":"CEPR Art. 240.6 · NEC Art. 240.6 / 240.4","inp":true,"inpLbl":"Capacidad instalada: ___ amperios","inpId":"inp_r_amp","defName":"TAMAÑO DEL BREAKER NO CORRESPONDE A LA INSTALACIÓN","ceprArt":"Artículo 240.6 / Sección VI — Reglamento Complementario","ceprText":"Los dispositivos de protección contra sobrecorriente deben ser del tamaño estándar correspondiente a la protección requerida.","necArt":"Artículo 240.6(A) / 240.4 — National Electrical Code","necText":"Standard ampere ratings: 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200 amperes.","accion":"Instalar el breaker del tamaño estándar correcto según la carga del servicio y el calibre de los conductores."},
+  {"id":"r_altura","desc":"La altura del wire holder/acometida cumple con el Patrón M-5-A de Luma Energy.","codigo":"Estándar M-5-A Luma Energy · CEPR Art. 230.24 · NEC Art. 230.24","inp":true,"inpLbl":"Altura medida: ___","inpId":"inp_r_alt","defName":"ALTURA DE LA BASE (WIRE HOLDER) NO CUMPLE CON EL PATRÓN M-5-A","ceprArt":"Artículo 230.24 — CEPR / Estándar M-5-A Luma Energy","ceprText":"Altura mínima del wire holder: 19'0\" tránsito vehicular, 12'6\" acceso privado, 10'6\" peatonal.","necArt":"Artículo 230.24(B) — National Electrical Code","necText":"Service-drop conductors minimum clearance: 10 ft pedestrian areas, 12 ft residential driveways, 18 ft public streets.","accion":"Ajustar el wire holder para cumplir con Estándar M-5-A de Luma Energy."},
+  {"id":"r_cert","desc":"Certificación completada con todos los campos requeridos, firmada y sellada por el perito.","codigo":"Reglamento Complementario Art. II.D.4,8 · NEC Art. 110.3","inp":false,"defName":"CERTIFICACIÓN INCOMPLETA O CON DATOS INCORRECTOS","ceprArt":"Artículo II.D.4 / II.D.8 — Reglamento Complementario","ceprText":"Es requisito que todas las instalaciones modificadas o reparadas se certifiquen por un perito electricista colegiado antes de conectarse al sistema eléctrico.","necArt":"Artículo 110.3(B) — National Electrical Code","necText":"Equipment shall be installed and used in accordance with any instructions included in the listing or labeling.","accion":"Completar todos los campos de la certificación con firma y sello del perito. Someter antes de solicitar nueva inspección."}
+]}],
+"des":[{"cat":"UBICACIÓN Y COLUMNA","items":[
+  {"id":"d_colindancia","desc":"La columna se encuentra a no más de 3 pies de la colindancia frontal con la calle.","codigo":"Reglamento Complementario Art. IV.D.14 · Patrón K-7-3-1","inp":false,"defName":"COLUMNA EXCEDE 3 PIES DE LA COLINDANCIA FRONTAL CON LA CALLE","ceprArt":"Artículo IV.D.14 — Reglamento Complementario / Patrón K-7-3-1","ceprText":"La columna estará dentro del terreno del solicitante a no más de 3 pies de la colindancia con la calle.","necArt":"Artículo 230.70 — National Electrical Code","necText":"The service disconnecting means shall be installed at a readily accessible location.","accion":"Relocalizar la columna a no más de 3 pies de la colindancia frontal con la calle, conforme al Reglamento Complementario Artículo IV.D.14."},
+  {"id":"d_columna","desc":"Columna con mínimo 8'0\" de altura, 16\" de ancho, 9\" de profundidad, sin perforaciones.","codigo":"Patrón K-7-3-1 Luma Energy · Lista de Cotejo 4375.044","inp":false,"defName":"COLUMNA NO CUMPLE CON DIMENSIONES MÍNIMAS O TIENE PERFORACIONES","ceprArt":"Patrón K-7-3-1 — Estándares Luma Energy","ceprText":"Columna de concreto: mínimo 8'0\" de altura, 16\" de ancho, 9\" de profundidad. Sin perforaciones ni accesorios ajenos.","necArt":"Artículo 230.43 / 110.26 — National Electrical Code","necText":"The concrete column shall be free from perforations or accessories not related to the meter installation.","accion":"Corregir la columna para cumplir con dimensiones mínimas del Patrón K-7-3-1."}
+]},{"cat":"ALTURAS Y CLEARANCES — PATRÓN M-5-A","items":[
+  {"id":"d_m5","desc":"Cumplimiento Patrón M-5-A: Altura mínima del wire holder (19'0\" tránsito / 12'6\" acceso privado / 10'6\" peatonal).","codigo":"Estándar M-5-A Luma Energy · CEPR Art. 230.24 · NEC Art. 230.24","inp":true,"inpLbl":"Altura medida: ___","inpId":"inp_d_m5","defName":"ALTURA DEL WIRE HOLDER NO CUMPLE CON EL PATRÓN M-5-A","ceprArt":"Artículo 230.24 — CEPR / Estándar M-5-A Luma Energy","ceprText":"Alturas mínimas: 19'0\" tránsito vehicular, 12'6\" acceso privado, 10'6\" peatonal. Lista de Cotejo Núm. 4375.044.","necArt":"Artículo 230.24(B) — National Electrical Code","necText":"Minimum clearance from grade: 10 ft pedestrian, 12 ft residential driveways, 18 ft public streets.","accion":"Ajustar el wire holder para cumplir con Estándar M-5-A: 19'0\" tránsito, 12'6\" acceso privado, 10'6\" peatonal."},
+  {"id":"d_wire_holder","desc":"El wire holder tiene mínimo 18 pulgadas desde el borde superior del techo o columna.","codigo":"Estándar M-5-A Luma Energy · NEC Art. 230.24(A)","inp":false,"defName":"WIRE HOLDER MENOR DE 18\" SOBRE BORDE SUPERIOR DEL TECHO O COLUMNA","ceprArt":"Estándar M-5-A — Luma Energy (Lista de Cotejo Núm. 4375.044)","ceprText":"El wire holder debe tener mínimo 18 pulgadas desde el borde superior del techo o columna, según el Estándar M-5-A de Luma Energy.","necArt":"Artículo 230.24(A) — National Electrical Code","necText":"Conductors shall have a vertical clearance of not less than 2.5 m (8 ft) above the roof surface, salvo las excepciones de techos con pendiente o áreas no transitables establecidas en 230.24(A).","accion":"Ajustar el wire holder para que quede a mínimo 18 pulgadas desde el borde superior, conforme al Estándar M-5-A de Luma Energy."},
+  {"id":"d_topografia","desc":"Área de trabajo plana y libre de obstáculos mínimo 3'0\"×3'0\" frente al contador.","codigo":"NEC Art. 110.26 · Patrón K-7-3-1","inp":false,"defName":"CONDICIÓN TOPOGRÁFICA INADECUADA — ÁREA DE TRABAJO INSUFICIENTE","ceprArt":"Patrón K-7-3-1 — Luma Energy","ceprText":"El área frente a la columna debe ser plana y libre de obstáculos, mínimo 3'0\" × 3'0\", pendiente máxima 2%.","necArt":"Artículo 110.26(A)(1) — National Electrical Code","necText":"Working space minimum depth: 3 ft. Minimum width: 30 inches or equipment width, whichever is greater.","accion":"Preparar área de trabajo plana de mínimo 3'0\" × 3'0\" con pendiente máxima 2% frente al contador."}
+]},{"cat":"TUBO DE SOPORTE Y MEDIDOR","items":[
+  {"id":"d_tubo","desc":"El tubo de soporte es rígido galvanizado, diámetro mínimo 2\", no expuesto más de 48 pulgadas.","codigo":"Reglamento Complementario Sección IV, Art. D.6 y Art. F.4 · NEC Art. 230.43","inp":false,"defName":"TUBO INSUFICIENTE (< 2\") O EXPOSICIÓN EXCESIVA (> 48\")","ceprArt":"Sección IV, Artículo D, Inciso 6 / Artículo F, Inciso 4 — Reglamento Complementario AEE/LUMA","ceprText":"El diámetro de toda la tubería asociada a un servicio no será menor de dos (2) pulgadas. El tubo cerca de la base deberá protegerse contra golpes y corrosión.","necArt":"Artículo 230.43 — National Electrical Code","necText":"Service-entrance conductors shall be installed using a recognized wiring method under 230.43 (RMC, IMC, EMT, PVC, entre otros), sized per the conductor ampacity requirements of this Code.","accion":"Sustituir el tubo por acero rígido galvanizado ≥ 2\", exposición máxima 48 pulgadas, conforme al Reglamento Complementario Sección IV."},
+  {"id":"d_altura_med","desc":"El centro del medidor entre 5'6\" y 7'0\" de altura.","codigo":"Reglamento Complementario Art. IV.O.4 · Lista de Cotejo 4375.044","inp":true,"inpLbl":"Altura del centro del medidor: ___","inpId":"inp_d_altm","defName":"ALTURA DEL CENTRO DEL MEDIDOR FUERA DEL RANGO (5'6\" – 7'0\")","ceprArt":"Artículo IV.O.4 — Reglamento Complementario","ceprText":"Los contadores se instalarán a altura no mayor de 7 pies y no menor de 5½ pies sobre el nivel del suelo.","necArt":"Artículo 230.70(A)(1) — National Electrical Code","necText":"The service disconnecting means shall be installed at a readily accessible location.","accion":"Ajustar la montura del medidor para que el centro quede entre 5'6\" y 7'0\" de altura."},
+  {"id":"d_caja","desc":"Caja del medidor de acero galvanizado, máximo 16\" de ancho, mínimo 4\" de concreto a ambos lados.","codigo":"Reglamento Complementario Art. IV.K.2 · Patrón K-7-3-1","inp":false,"defName":"CAJA DEL MEDIDOR NO CUMPLE CON ESPECIFICACIONES REQUERIDAS","ceprArt":"Artículo IV.K.2 — Reglamento Complementario","ceprText":"Caja de acero galvanizado a prueba de intemperie, máximo 16\" de ancho, mínimo 4\" de concreto a ambos lados.","necArt":"Artículo 230.66 / 312.2 — National Electrical Code","necText":"Service equipment shall be listed and rated for the voltage and current. Enclosures in wet locations shall prevent moisture accumulation.","accion":"Sustituir la caja por una de acero galvanizado aprobada, máximo 16\" con mínimo 4\" de concreto a ambos lados."},
+  {"id":"d_muelas","desc":"Las muelas (contactos de la base del contador) están en buen estado, sin daños ni contactos abiertos.","codigo":"Reglamento Complementario Sección IV, Art. K.1-2 · NEC Art. 110.12(B) / 230.66","inp":false,"defName":"MUELAS (CONTACTOS DE BASE DEL CONTADOR) DAÑADAS O CONTACTOS ABIERTOS","ceprArt":"Sección IV, Artículo K, Incisos 1 y 2 — Reglamento Complementario AEE/LUMA","ceprText":"La Autoridad aprobará únicamente monturas preparadas con bases de metal o cajas de metal para contadores provistas de enchufes para contadores en instalaciones monofásicas y trifásicas. La base o bases y cajas de metal para contadores suministradas por el cliente deberán construirse de acero galvanizado y a prueba de intemperie, de un tipo aprobado por la Autoridad.","necArt":"Artículos 110.12(B) / 230.66 — National Electrical Code","necText":"NEC 110.12(B), Integrity of Electrical Equipment and Connections: Internal parts of electrical equipment, including busbars, wiring terminals, insulators, and other surfaces, shall not be damaged. There shall be no damaged parts that may adversely affect safe operation, such as parts that are broken, bent, cut, or deteriorated by corrosion, chemical action, or overheating. NEC 230.66: Individual meter socket enclosures shall be listed and rated for the voltage and ampacity of the service.","accion":"Sustituir las muelas que presenten contactos abiertos, rotos, doblados, cortados, quemados o deteriorados por corrosión, por unas nuevas de tipo aprobado por Luma Energy, conforme al Reglamento Complementario Sección IV, Artículo K, y NEC Artículo 110.12(B)."}
+]},{"cat":"PUESTA A TIERRA","items":[
+  {"id":"d_tierra","desc":"Varilla a tierra instalada 6 pulgadas bajo el suelo, cable no expuesto.","codigo":"CEPR Art. 250.52 · NEC Art. 250.52/250.53 · Reg. Comp. Art. VII.G","inp":true,"inpLbl":"Calibre conductor: ___ | Color: ___","inpId":"inp_d_tierra","defName":"ELECTRODO (VARILLA) DE PUESTA A TIERRA DEFICIENTE O CONDUCTOR EXPUESTO","ceprArt":"Artículo 250.52 / Artículo VII.G — Reglamento Complementario","ceprText":"Varilla de 5/8\" × 8 pies de acero revestido de cobre, instalada 6 pulgadas bajo el suelo. Conductor no expuesto.","necArt":"Artículo 250.52(A)(5) / 250.53(G) — National Electrical Code","necText":"Rod electrodes shall be not less than 5/8 in. diameter and 8 ft in length. Embedded below permanent moisture level.","accion":"Instalar varilla de 5/8\" × 8 pies a 6 pulgadas bajo el suelo. Proteger el conductor para que no quede expuesto."},
+  {"id":"d_cal_tierra","desc":"Calibre del conductor de puesta a tierra adecuado según la Tabla 250.66.","codigo":"CEPR Art. 250.66 · NEC Tabla 250.66","inp":false,"defName":"CALIBRE DE CONDUCTOR DE PUESTA A TIERRA INCORRECTO","ceprArt":"Artículo 250.66 / Artículo VII.C — Reglamento Complementario","ceprText":"El conductor de puesta a tierra será de cobre con calibre no menor al establecido en la Tabla 250.66.","necArt":"Artículo 250.66 / Tabla 250.66 — National Electrical Code","necText":"The size of the grounding electrode conductor shall not be less than given in Table 250.66.","accion":"Sustituir el conductor por cobre del calibre correcto según Tabla 250.66."}
+]},{"cat":"CONDUCTORES Y PROTECCIONES","items":[
+  {"id":"d_breaker","desc":"Capacidad del breaker corresponde a la instalación.","codigo":"CEPR Art. 240.6 · NEC Art. 240.6 / 240.4","inp":true,"inpLbl":"Capacidad instalada: ___ amperios","inpId":"inp_d_amp","defName":"TAMAÑO DEL BREAKER NO CORRESPONDE A LA INSTALACIÓN","ceprArt":"Artículo 240.6 / Sección VI — Reglamento Complementario","ceprText":"Los dispositivos de protección contra sobrecorriente deben ser del tamaño estándar correspondiente.","necArt":"Artículo 240.6(A) / 240.4 — National Electrical Code","necText":"Standard ampere ratings: 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200 amperes.","accion":"Instalar el breaker del tamaño estándar correcto según la carga y calibre de los conductores."},
+  {"id":"d_calibre","desc":"Calibre de conductores concuerda con el breaker y la certificación.","codigo":"CEPR Art. 230.23 · NEC Art. 230.23 / 310.15","inp":true,"inpLbl":"Calibre lado fuente: ___ | Lado carga: ___","inpId":"inp_d_cal","defName":"CALIBRE DE CONDUCTORES NO CORRESPONDE AL BREAKER O A LA CERTIFICACIÓN","ceprArt":"Artículo 230.23 / Artículo IV.G — Reglamento Complementario","ceprText":"Los conductores de acometida deben tener suficiente ampacidad para la carga.","necArt":"Artículo 230.23 / 310.15 — National Electrical Code","necText":"Service conductors shall have adequate ampacity. Not smaller than 8 AWG copper or 6 AWG aluminum.","accion":"Sustituir los conductores por el calibre adecuado según la carga y el breaker."},
+  {"id":"d_colores","desc":"Cumplimiento con código de colores de conductores.","codigo":"CEPR Art. 250.119 · NEC Art. 250.119 / 200.6","inp":false,"defName":"INCUMPLIMIENTO CON CÓDIGO DE COLORES DE CONDUCTORES","ceprArt":"Artículo 250.119 / Artículo V.B.4 — Reglamento Complementario","ceprText":"Neutral: blanco o gris claro. Tierra: verde con o sin rayas amarillas, o desnudo.","necArt":"Artículos 250.119 / 200.6 — National Electrical Code","necText":"Equipment grounding conductors shall be green or green with yellow stripes. Neutral conductors shall be white or gray.","accion":"Identificar todos los conductores conforme al código de colores vigente."},
+  {"id":"d_multitap","desc":"No hay múltiples conductores en el mismo terminal (multitapping).","codigo":"CEPR Art. 250.102 · NEC Art. 110.14(A) / 408.41","inp":false,"defName":"MÚLTIPLES CONDUCTORES EN UN MISMO TERMINAL (MULTITAPPING)","ceprArt":"Artículo 250.102 / Artículo VII.D — Reglamento Complementario","ceprText":"El conductor de enlace de conexión a tierra del equipo debe conectarse individualmente al terminal designado. No se permite multitapping sin conector aprobado y listado.","necArt":"Artículos 110.14(A) / 408.41 — National Electrical Code","necText":"NEC 110.14(A): A terminal not identified for more than one conductor shall be used for only one conductor. NEC 408.41: Each grounded (neutral) conductor shall terminate in an individual terminal not also used for another conductor.","accion":"Separar los conductores asignando un solo conductor por terminal, especialmente el conductor neutral."}
+]},{"cat":"DOCUMENTACIÓN","items":[
+  {"id":"d_cert","desc":"Certificación completada con todos los campos requeridos, firmada y sellada.","codigo":"Reglamento Complementario Art. II.D.4,7 · NEC Art. 110.3","inp":false,"defName":"CERTIFICACIÓN INCOMPLETA O CON DATOS INCORRECTOS","ceprArt":"Artículo II.D.4 / II.D.7 — Reglamento Complementario","ceprText":"Todas las instalaciones en desuso por más de un año requieren el permiso de uso y certificación eléctrica previo a la conexión.","necArt":"Artículo 110.3(B) — National Electrical Code","necText":"Equipment shall be installed and used in accordance with any instructions included in the listing or labeling.","accion":"Completar todos los campos de la Certificación con firma y sello del perito. Para instalaciones en desuso > 1 año, incluir permiso de uso vigente."}
+]}]};
+
+let tipo=null,estado={},fotos={},rechazado=false,lista=[],comFotos=[];
+
+function irMenu(){
+  document.getElementById('menu').className='on';
+  document.getElementById('insp').style.display='none';
+  document.getElementById('prev').style.display='none';
+  showMenuTab('insp');
+}
+function irInsp(){document.getElementById('insp').style.display='block';document.getElementById('prev').style.display='none';document.getElementById('menu').className=''}
+function irPrev(){const d=getDefs();if(!d.length){toast('No hay deficiencias marcadas');return}renderPrev(d);document.getElementById('insp').style.display='none';document.getElementById('prev').style.display='block';window.scrollTo(0,0)}
+
+function abrir(t){
+  tipo=t;lista=DEFS[t];estado={};fotos={};rechazado=false;comFotos=[];
+  document.getElementById('com-photos').innerHTML='';
+  document.getElementById('fecha').valueAsDate=new Date();
+  document.getElementById('hbadge').textContent=t==='rep'?'REPARACIÓN':'DESUSO +1 AÑO';
+  document.getElementById('hbadge').className='hbadge '+t;
+  document.getElementById('cl-titulo').textContent=t==='rep'?'Lista de Cotejo — Reparación':'Lista de Cotejo — Desuso +1 Año';
+  document.getElementById('huser').textContent='Inspector: '+(currentUser?currentUser.nombre:'—');
+  document.getElementById('btnr').className='rbtn';
+  document.getElementById('bprev').style.display='none';
+  renderCL();updateStats();
+  document.getElementById('menu').className='';
+  document.getElementById('insp').style.display='block';
+  obtenerGeo();
+  window.scrollTo(0,0);
+}
+
+function renderCL(){
+  const b=document.getElementById('cl-body');b.innerHTML='';
+  lista.forEach(cat=>{
+    const l=document.createElement('div');l.className='slbl';l.textContent=cat.cat;b.appendChild(l);
+    cat.items.forEach(item=>{
+      const el=document.createElement('div');el.className='ci';el.id='ci-'+item.id;
+      const ex=item.inp?`<div class="iex" id="ie-${item.id}"><div class="iexl">${item.inpLbl}</div><input type="text" id="${item.inpId}" placeholder="${item.inpLbl}"></div>`:'';
+      el.innerHTML=`<div class="cdesc">${item.desc}</div><div class="ccode">${item.codigo}</div>${ex}<div class="ibtns"><button class="ibtn" onclick="si('${item.id}','ok')">✓ CUMPLE</button><button class="ibtn" onclick="si('${item.id}','nc')">✗ NO CUMPLE</button><button class="ibtn" onclick="si('${item.id}','na')">— N/A</button></div><div class="pwrap" id="pw-${item.id}"><input type="file" accept="image/*" id="fi-${item.id}" style="display:none" onchange="addF('${item.id}',this)"><button class="pbtn" onclick="document.getElementById('fi-${item.id}').click()">📷 Agregar foto (cámara o galería)</button><div class="pgrid" id="pg-${item.id}"></div></div>`;
+      b.appendChild(el);
+    });
+  });
+}
+
+function si(id,val){
+  estado[id]=val;
+  const el=document.getElementById('ci-'+id);
+  el.className='ci'+(val==='ok'?' ok':val==='nc'?' nc':' na');
+  const ie=document.getElementById('ie-'+id);
+  if(ie)ie.className='iex'+(val!=='na'?' show':'');
+  const bs=el.querySelectorAll('.ibtn');
+  bs[0].className='ibtn'+(val==='ok'?' ac':'');
+  bs[1].className='ibtn'+(val==='nc'?' anc':'');
+  bs[2].className='ibtn'+(val==='na'?' ana':'');
+  updateStats();chkBtn();
+}
+
+function updateStats(){
+  let c=0,nc=0,na=0,p=0;
+  lista.forEach(cat=>cat.items.forEach(i=>{const v=estado[i.id];if(!v)p++;else if(v==='ok')c++;else if(v==='nc')nc++;else na++}));
+  document.getElementById('cc').textContent=c;
+  document.getElementById('cnc').textContent=nc;
+  document.getElementById('cna').textContent=na;
+  document.getElementById('cp').textContent=p;
+}
+
+function setRes(){rechazado=!rechazado;document.getElementById('btnr').className='rbtn'+(rechazado?' act':'');chkBtn()}
+function chkBtn(){const d=getDefs();document.getElementById('bprev').style.display=(d.length>0&&rechazado)?'block':'none'}
+
+function getDefs(){
+  const d=[];
+  lista.forEach(cat=>cat.items.forEach(item=>{
+    if(estado[item.id]==='nc'){
+      let ex='';
+      if(item.inp){const el=document.getElementById(item.inpId);if(el&&el.value)ex=' ('+el.value+')'}
+      d.push({...item,ex,imgs:(fotos[item.id]||[]).filter(Boolean)});
+    }
+  }));
+  return d;
+}
+
+function comprimirImagen(dataUrl, maxAncho, calidad, callback){
+  const img = new Image();
+  img.onload = () => {
+    let w = img.width, h = img.height;
+    if(w > maxAncho){
+      h = Math.round(h * (maxAncho / w));
+      w = maxAncho;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', calidad));
+  };
+  img.onerror = () => callback(dataUrl); // si falla, usar la original
+  img.src = dataUrl;
+}
+
+function addF(id,inp){
+  if(!inp.files||!inp.files[0])return;
+  const r=new FileReader();
+  r.onload=e=>{
+    comprimirImagen(e.target.result, 1000, 0.7, (imgComprimida)=>{
+      if(!fotos[id])fotos[id]=[];
+      const idx=fotos[id].length;fotos[id].push(imgComprimida);
+      const g=document.getElementById('pg-'+id);
+      const w=document.createElement('div');w.className='ptw';w.id='ptw-'+id+'-'+idx;
+      w.innerHTML=`<img src="${imgComprimida}" class="pth"><button class="pdel" onclick="delF('${id}',${idx})">✕</button>`;
+      g.appendChild(w);toast('Foto agregada ✓');
+    });
+  };
+  r.readAsDataURL(inp.files[0]);inp.value='';
+}
+function delF(id,idx){if(fotos[id])fotos[id][idx]=null;const el=document.getElementById('ptw-'+id+'-'+idx);if(el)el.remove()}
+
+function addComFoto(inp){
+  if(!inp.files||!inp.files[0])return;
+  const r=new FileReader();
+  r.onload=e=>{
+    comprimirImagen(e.target.result, 1000, 0.7, (imgComprimida)=>{
+      const idx=comFotos.length;comFotos.push(imgComprimida);
+      const g=document.getElementById('com-photos');
+      const w=document.createElement('div');w.className='com-photo-wrap';w.id='cpw-'+idx;
+      w.innerHTML=`<img src="${imgComprimida}" class="com-photo"><button class="com-del" onclick="delComFoto(${idx})">✕</button>`;
+      g.appendChild(w);toast('Foto de comentario agregada ✓');
+    });
+  };
+  r.readAsDataURL(inp.files[0]);inp.value='';
+}
+function delComFoto(idx){comFotos[idx]=null;const el=document.getElementById('cpw-'+idx);if(el)el.remove()}
+
+function buscarPerito(){
+  const lic=document.getElementById('licencia').value.trim();
+  if(!lic){toast('Ingrese número de licencia primero');return}
+  toast('Buscando perito...');
+  setTimeout(()=>{
+    document.getElementById('perito').placeholder='Ingrese nombre manualmente';
+    document.getElementById('perito').focus();
+    toast('Búsqueda completada — ingrese nombre si es necesario');
+  },1500);
+}
+
+function getInfoBase(){
+  const cert=document.getElementById('cert').value||'N/A';
+  const perito=document.getElementById('perito').value||'N/A';
+  const lic=document.getElementById('licencia').value||'N/A';
+  const fraw=document.getElementById('fecha').value;
+  const fecha=fraw?new Date(fraw+'T12:00:00').toLocaleDateString('es-PR',{day:'2-digit',month:'long',year:'numeric'}):'N/A';
+  const com=document.getElementById('comentarios').value||'';
+  const tl=tipo==='rep'?'Reparación':'Desuso (más de un año sin servicio)';
+  const inspector=currentUser?currentUser.nombre:'Angel Melendez';
+  const geoManualEl=document.getElementById('geo-manual');
+  const geoManualVal=geoManualEl?geoManualEl.value.trim():'';
+  const geo=geoManualVal?geoManualVal+' (verificadas manualmente)':(geoData?geoData.lat+', '+geoData.lng+' (±'+geoData.acc+'m)':'No disponible');
+  return{cert,perito,lic,fecha,com,tl,inspector,geo};
+}
+
+function renderPrev(defs){
+  const{cert,perito,lic,fecha,com,tl,inspector,geo}=getInfoBase();
+  const logoSvg=`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect width='120' height='40' rx='8' fill='%2300457C'/%3E%3Ctext x='60' y='27' font-family='Arial' font-size='18' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E`;
+  let h=`<div class="rpt-header">
+    <img src="${logoSvg}" alt="Luma Energy" style="height:52px;border-radius:10px;border:2px solid rgba(255,255,255,.2);margin-bottom:14px">
+    <div class="rpt-agency">Luma Energy · Puerto Rico</div>
+    <div class="rpt-title">Informe de Rechazo de Certificación</div>
+    <div class="rpt-subtitle">Columnas y Bases de Medidores</div>
+    <div class="rpt-badge">⛔ RECHAZADA</div>
+  </div>
+  <div class="rpt-section">
+    <div class="rpt-sec-title">Datos del Informe</div>
+    <div class="rpt-row"><span>No. Certificación</span><span><strong>${cert}</strong></span></div>
+    <div class="rpt-row"><span>Tipo de Inspección</span><span>${tl}</span></div>
+    <div class="rpt-row"><span>Fecha</span><span>${fecha}</span></div>
+    <div class="rpt-row"><span>Perito Electricista</span><span>${perito}</span></div>
+    <div class="rpt-row"><span>No. Licencia</span><span>${lic}</span></div>
+    <div class="rpt-row"><span>Inspector (Forman)</span><span>${inspector}</span></div>
+    <div class="rpt-row"><span>Supervisor</span><span>Luis Alicea</span></div>
+    <div class="rpt-row"><span>Geolocalización</span><span style="font-size:11px">${geo}</span></div>
+  </div>
+  <div class="rpt-section">
+    <div class="rpt-sec-title">Determinación</div>
+    <p style="font-size:13px;line-height:1.6;color:#374151">Luego de efectuada la inspección de la certificación número <strong>${cert}</strong>, se determina que la instalación eléctrica <strong>NO CUMPLE</strong> con los requisitos mínimos establecidos por el Código Eléctrico de Puerto Rico (CEPR), el Reglamento Complementario de Luma Energy y el National Electrical Code (NEC). Se identificaron <strong>${defs.length} deficiencia(s)</strong> que se detallan a continuación.</p>
+  </div>
+  <div class="rpt-section"><div class="rpt-sec-title">Deficiencias Encontradas</div>`;
+  defs.forEach((d,i)=>{
+    const fotoHtml=d.imgs&&d.imgs.length>0?`<div style="margin-top:10px"><div class="def-label">Evidencia Fotográfica</div><div class="def-photos">${d.imgs.map(img=>`<img src="${img}" class="def-photo" alt="Evidencia">`).join('')}</div></div>`:'';
+    h+=`<div class="def-card"><div class="def-header"><div class="def-num">Deficiencia #${i+1}</div><div class="def-name">${d.defName}${d.ex}</div><div class="def-code">${d.codigo}</div></div><div class="def-body"><div class="def-label">Código Eléctrico de Puerto Rico</div><div class="def-text"><strong>${d.ceprArt}:</strong><br>${d.ceprText}</div><div class="def-sep"></div><div class="def-label">National Electrical Code</div><div class="def-text"><strong>${d.necArt}:</strong><br>${d.necText}</div><div class="def-accion"><div class="def-accion-lbl">✅ Acción Correctiva Requerida</div><div class="def-accion-text">${d.accion}</div></div>${fotoHtml}</div></div>`;
+  });
+  h+='</div>';
+  if(com||comFotos.filter(Boolean).length>0){
+    const comImgs=comFotos.filter(Boolean);
+    h+=`<div class="rpt-section"><div class="rpt-sec-title">Comentarios del Inspector</div><p style="font-size:13px;line-height:1.6;color:#374151">${com||'—'}</p>${comImgs.length>0?`<div class="def-photos" style="margin-top:10px">${comImgs.map(img=>`<img src="${img}" class="def-photo" alt="Comentario">`).join('')}</div>`:''}</div>`;
+  }
+  h+=`<div class="rpt-footer"><p>Este informe se emite de conformidad con el Código Eléctrico de Puerto Rico (CEPR), el Reglamento Complementario de Luma Energy y el National Electrical Code (NEC).</p><p style="margin-top:8px">El perito electricista es responsable de corregir todas las deficiencias y someter nueva certificación antes de solicitar nueva inspección.</p><p style="margin-top:10px;font-weight:700;color:#1F2937">Perito: ${perito} · No. Licencia: ${lic}</p></div>`;
+  document.getElementById('prev-content').innerHTML=h;
+}
+
+function generarTexto(){
+  const{cert,perito,lic,fecha,com,tl,inspector,geo}=getInfoBase();
+  const defs=getDefs();
+  let t='LUMA ENERGY — PUERTO RICO\n';
+  t+='INFORME DE RECHAZO DE CERTIFICACIÓN ELÉCTRICA\n';
+  t+='='.repeat(56)+'\n\n';
+  t+=`No. Certificación:    ${cert}\n`;
+  t+=`Tipo de Inspección:   ${tl}\n`;
+  t+=`Fecha:                ${fecha}\n`;
+  t+=`Perito Electricista:  ${perito}\n`;
+  t+=`No. Licencia:         ${lic}\n`;
+  t+=`Inspector (Forman):   ${inspector}\n`;
+  t+=`Supervisor:           Luis Alicea\n`;
+  t+=`Geolocalización:      ${geo}\n\n`;
+  t+='RESULTADO: ⛔ RECHAZADA\n';
+  t+='='.repeat(56)+'\n\n';
+  t+=`Luego de efectuada la inspección de la certificación número ${cert}, se determina que la instalación eléctrica NO CUMPLE con los requisitos mínimos del CEPR, Reglamento Complementario de Luma Energy y NEC.\n\nSe identificaron ${defs.length} deficiencia(s):\n\n`;
+  defs.forEach((d,i)=>{
+    t+='-'.repeat(56)+'\n';
+    t+=`DEFICIENCIA #${i+1} — ${d.defName}${d.ex}\n`;
+    t+=`Código: ${d.codigo}\n\n`;
+    t+=`CEPR — ${d.ceprArt}:\n${d.ceprText}\n\n`;
+    t+=`NEC — ${d.necArt}:\n${d.necText}\n\n`;
+    t+=`ACCIÓN CORRECTIVA:\n${d.accion}\n\n`;
+    if(d.imgs&&d.imgs.length>0)t+=`[${d.imgs.length} foto(s) de evidencia adjunta(s)]\n\n`;
+  });
+  if(com)t+='-'.repeat(56)+'\nCOMENTARIOS DEL INSPECTOR:\n'+com+'\n\n';
+  if(comFotos.filter(Boolean).length>0)t+=`[${comFotos.filter(Boolean).length} foto(s) de comentario adjunta(s)]\n\n`;
+  t+='='.repeat(56)+'\n';
+  t+=`Perito: ${perito} · No. Licencia: ${lic} · Inspector: ${inspector}\n`;
+  t+='='.repeat(56)+'\n';
+  return t;
+}
+
+// Genera el informe HTML COMPLETO y profesional (igual look que el preview), standalone, con fotos embebidas en base64
+function generarHTMLProfesional(){
+  const contenido = document.getElementById('prev-content').innerHTML;
+  const {cert} = getInfoBase();
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<title>Informe de Rechazo — ${cert}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#F0F2F5;color:#1A1A2E;padding:20px}
+.pwrap2{max-width:680px;margin:0 auto}
+.rpt-header{background:#002D52;border-radius:14px;padding:24px 20px;margin-bottom:14px;color:white;text-align:center}
+.rpt-agency{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.6);margin-bottom:3px}
+.rpt-title{font-size:18px;font-weight:900}
+.rpt-subtitle{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+.rpt-badge{display:inline-block;background:#C00000;color:white;font-size:13px;font-weight:900;padding:7px 20px;border-radius:20px;margin-top:14px}
+.rpt-section{background:white;border-radius:12px;padding:18px 16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,70,.07)}
+.rpt-sec-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#00457C;border-bottom:2px solid #E8F1F9;padding-bottom:8px;margin-bottom:12px}
+.rpt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F0F2F5;font-size:13px;gap:8px}
+.rpt-row:last-child{border-bottom:none}
+.rpt-row span:first-child{color:#6B7280;font-weight:600;flex-shrink:0}
+.def-card{border:1.5px solid #E5E7EB;border-radius:11px;overflow:hidden;margin-bottom:12px}
+.def-header{background:#FEF2F2;padding:12px 14px;border-bottom:1px solid #FECACA}
+.def-num{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#C00000;margin-bottom:3px}
+.def-name{font-size:13px;font-weight:800;color:#1F2937;line-height:1.35}
+.def-code{font-size:10px;color:#6B7280;margin-top:4px}
+.def-body{padding:12px 14px}
+.def-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#00457C;margin-bottom:4px}
+.def-text{font-size:12px;line-height:1.55;color:#374151;margin-bottom:10px}
+.def-sep{height:1px;background:#F0F2F5;margin:10px 0}
+.def-photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.def-photo{width:140px;height:140px;border-radius:8px;object-fit:cover;border:1.5px solid #D1D9E0}
+.def-accion{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 12px;margin-top:10px}
+.def-accion-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#186A3B;margin-bottom:4px}
+.def-accion-text{font-size:12px;line-height:1.55;color:#166534}
+.rpt-footer{background:white;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #E5E7EB;text-align:center}
+.rpt-footer p{font-size:11px;color:#6B7280;line-height:1.6}
+@media print{
+  body{background:white;padding:0}
+  .def-card,.rpt-section,.rpt-header,.rpt-footer{break-inside:avoid;page-break-inside:avoid}
+}
+</style></head>
+<body onload="setTimeout(function(){try{window.print()}catch(e){}},400)"><div class="pwrap2">${contenido}</div></body></html>`;
+}
+
+// Genera una ventana de impresión con el informe profesional. Usa window.print()
+// nativo del navegador — NO depende de ninguna librería externa ni CDN, por lo
+// que funciona incluso si la red corporativa bloquea cdnjs/jsdelivr/unpkg, etc.
+// El usuario elige "Guardar como PDF" en el diálogo de impresión del sistema.
+function imprimirInforme(){
+  const htmlReport=generarHTMLProfesional();
+
+  const ventana = window.open('', '_blank');
+  if(!ventana){
+    toast('⛔ Permita ventanas emergentes para este sitio e intente de nuevo');
+    return;
+  }
+  ventana.document.open();
+  ventana.document.write(htmlReport);
+  ventana.document.close();
+  // La propia ventana dispara window.print() automáticamente (ver onload
+  // en generarHTMLProfesional). Si por alguna razón no se abre el diálogo,
+  // el usuario puede usar el menú del navegador para imprimir/guardar PDF.
+
+  toast('Informe abierto — en el diálogo, elija "Guardar como PDF" ✓');
+}
+
+async function enviar(){
+  const{cert,inspector}=getInfoBase();
+  const asunto=`Rechazo Certificacion ${cert} - ${inspector}`;
+  const dest='angel.melendez@lumapr.com';
+
+  imprimirInforme();
+
+  // Correo de apoyo con destinatario y asunto ya preparados, para enviar
+  // una vez el PDF haya sido guardado desde el diálogo de impresión.
+  setTimeout(()=>{
+    const cuerpo=`Informe de rechazo ${cert}, generado por ${inspector}. Adjunte el PDF que acaba de guardar (en el diálogo de impresión, elija "Guardar como PDF" o "Guardar en Archivos").`;
+    window.location.href='mailto:'+dest+'?subject='+encodeURIComponent(asunto)+'&body='+encodeURIComponent(cuerpo);
+  },3000);
+}
+
+function descargar(){
+  imprimirInforme();
+}
+
+function limpiar(){
+  confirmarAccion('¿Limpiar el formulario completamente?', ()=>{
+    estado={};fotos={};rechazado=false;comFotos=[];
+    ['cert','perito','licencia','comentarios','geo-manual'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+    const fechaEl=document.getElementById('fecha');
+    if(fechaEl)fechaEl.valueAsDate=new Date();
+    const btnrEl=document.getElementById('btnr');
+    if(btnrEl)btnrEl.className='rbtn';
+    const bprevEl=document.getElementById('bprev');
+    if(bprevEl)bprevEl.style.display='none';
+    const comPhotosEl=document.getElementById('com-photos');
+    if(comPhotosEl)comPhotosEl.innerHTML='';
+    const geoInfoEl=document.getElementById('geo-info');
+    if(geoInfoEl)geoInfoEl.textContent='📍 Geolocalización: obteniendo...';
+    geoData=null;
+    document.getElementById('prev').style.display='none';
+    document.getElementById('insp').style.display='block';
+    renderCL();updateStats();
+    toast('Formulario limpiado ✓');
+    window.scrollTo(0,0);
+  });
+}
+
+// Modal de confirmacion propio (no depende de confirm() nativo, que algunas
+// politicas corporativas de Edge/Intune bloquean silenciosamente)
+let modalCallbackPendiente = null;
+function confirmarAccion(texto, callback){
+  document.getElementById('modal-texto').textContent = texto;
+  document.getElementById('modal-overlay').className = 'modal-overlay show';
+  modalCallbackPendiente = callback;
+}
+function modalConfirmar(){
+  document.getElementById('modal-overlay').className = 'modal-overlay';
+  if(modalCallbackPendiente) modalCallbackPendiente();
+  modalCallbackPendiente = null;
+}
+function modalCancelar(){
+  document.getElementById('modal-overlay').className = 'modal-overlay';
+  modalCallbackPendiente = null;
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',2800);
+}
+</script>
+</body>
+</html>
