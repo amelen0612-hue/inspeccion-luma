@@ -57,8 +57,23 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#EAEEF2;color:var(--text
 .mtab.act{background:rgba(255,255,255,.22);color:white}
 
 /* Referencias panel */
-#ref-panel{display:none;padding:0 16px 80px;flex:1;overflow-y:auto}
-#ref-panel.show{display:block}
+#ref-panel,#citas-panel{display:none;padding:0 16px 80px;flex:1;overflow-y:auto}
+#ref-panel.show,#citas-panel.show{display:block}
+
+/* Citas con Peritos — panel del menú */
+.cita-add-btn{width:100%;padding:12px;background:rgba(255,255,255,.12);border:1.5px dashed rgba(255,255,255,.3);border-radius:10px;color:white;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px}
+.citas-form{background:rgba(255,255,255,.08);border-radius:12px;padding:14px;margin-bottom:14px}
+.citas-form input{width:100%;padding:10px 12px;border:1.5px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.1);color:white;font-size:13px;margin-bottom:10px;-webkit-appearance:none}
+.citas-form input::placeholder{color:rgba(255,255,255,.4)}
+.citas-form input:focus{outline:none;border-color:#00AEEF}
+.citas-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.citas-form-btns{display:flex;gap:8px;margin-top:4px}
+.citas-btn{flex:1;padding:11px;border:none;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer}
+.citas-btn.crear{background:#00AEEF;color:white}
+.citas-btn.cancelar{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
+.cita-estado{font-size:11px;font-weight:800;margin-top:4px}
+.cita-estado.pend{color:#FBBF24}.cita-estado.llegue{color:#00AEEF}.cita-estado.done{color:#4ADE80}
+.hbadge.pend{background:var(--gray);color:white}
 .ref-search{display:flex;gap:8px;margin-bottom:14px}
 .ref-search input{flex:1;padding:10px 14px;border:1.5px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.1);color:white;font-size:13px}
 .ref-search input::placeholder{color:rgba(255,255,255,.4)}
@@ -79,6 +94,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#EAEEF2;color:var(--text
 
 /* ===== INSPECCION ===== */
 #insp{display:none}
+#cita-view{display:none}
 header{background:var(--blue);color:white;padding:12px 14px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.3)}
 .hrow{display:flex;align-items:center;gap:10px}
 .bback{background:rgba(255,255,255,.15);border:none;color:white;width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
@@ -98,7 +114,7 @@ header p{font-size:10px;opacity:.6;margin-top:2px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .frow.full{grid-template-columns:1fr}
 .fl{font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;display:block}
-input[type=text],input[type=date],textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;background:var(--gray-bg);-webkit-appearance:none}
+input[type=text],input[type=date],input[type=time],textarea,select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;background:var(--gray-bg);-webkit-appearance:none}
 input:focus,textarea:focus{outline:none;border-color:var(--blue);background:white}
 textarea{min-height:80px;resize:vertical}
 .perito-row{display:flex;gap:8px;align-items:flex-end}
@@ -231,6 +247,7 @@ textarea{min-height:80px;resize:vertical}
   </div>
   <div class="menu-tabs">
     <button class="mtab act" id="tab-insp" onclick="showMenuTab('insp')">🔧 Inspecciones</button>
+    <button class="mtab" id="tab-citas" onclick="showMenuTab('citas')">📅 Citas</button>
     <button class="mtab" id="tab-ref" onclick="showMenuTab('ref')">📋 Referencias</button>
   </div>
   <div class="mcards" id="menu-cards">
@@ -253,6 +270,26 @@ textarea{min-height:80px;resize:vertical}
       <h3 id="ref-detail-title"></h3>
       <p id="ref-detail-body"></p>
     </div>
+  </div>
+  <div id="citas-panel">
+    <button class="cita-add-btn" onclick="mostrarFormCita()">➕ Nueva Cita con Perito</button>
+    <div class="citas-form" id="citas-form" style="display:none">
+      <input type="text" id="cf-cliente" placeholder="Nombre del cliente *">
+      <input type="text" id="cf-direccion" placeholder="Dirección">
+      <div class="citas-form-row">
+        <input type="text" id="cf-perito" placeholder="Perito electricista">
+        <input type="text" id="cf-licencia" placeholder="No. Licencia">
+      </div>
+      <div class="citas-form-row">
+        <input type="date" id="cf-fecha">
+        <input type="time" id="cf-hora">
+      </div>
+      <div class="citas-form-btns">
+        <button class="citas-btn cancelar" onclick="cancelarFormCita()">Cancelar</button>
+        <button class="citas-btn crear" onclick="crearCita()">Crear Cita</button>
+      </div>
+    </div>
+    <div id="citas-list"></div>
   </div>
   <button class="logout-btn" onclick="logout()">🚪 Cerrar sesión</button>
   <div class="mfoot">Luma Energy · Puerto Rico</div>
@@ -319,6 +356,51 @@ textarea{min-height:80px;resize:vertical}
   </div>
   <button class="bprev" id="bprev" onclick="irPrev()">👁 Ver resumen y enviar</button>
   <button class="blimpiar" onclick="limpiar()">🗑️ LIMPIAR FORMULARIO</button>
+</div>
+</div>
+
+<!-- ===== CITA CON PERITO — DETALLE ===== -->
+<div id="cita-view">
+<header>
+  <div class="hrow">
+    <button class="bback" onclick="irMenuCitas()">&#8592;</button>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='26' viewBox='0 0 80 26'%3E%3Crect width='80' height='26' rx='5' fill='rgba(255,255,255,0.2)'/%3E%3Ctext x='40' y='18' font-family='Arial' font-size='12' font-weight='900' fill='white' text-anchor='middle'%3ELUMA%3C/text%3E%3C/svg%3E" alt="Luma">
+    <div>
+      <div style="font-size:13px;font-weight:700">Cita con Perito</div>
+      <p>Inspector: <span id="cv-inspector">—</span></p>
+    </div>
+    <div class="hbadge" id="cv-badge"></div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="card">
+    <div class="ch">Datos de la Cita</div>
+    <div class="cb">
+      <div class="frow">
+        <div><span class="fl">Cliente</span><p id="cv-cliente" style="font-size:14px;font-weight:700"></p></div>
+        <div><span class="fl">Fecha / Hora</span><p id="cv-fecha" style="font-size:14px;font-weight:700"></p></div>
+      </div>
+      <div class="frow full"><div><span class="fl">Dirección</span><p id="cv-direccion" style="font-size:13px"></p></div></div>
+      <div class="frow full"><div><span class="fl">Perito Electricista</span><p id="cv-perito" style="font-size:13px"></p></div></div>
+    </div>
+  </div>
+  <div class="card" id="cita-llegar-card" style="display:none">
+    <div class="cb">
+      <button class="bprev" style="display:block" onclick="marcarLlegue()">📍 Llegué</button>
+    </div>
+  </div>
+  <div class="card" id="cita-doc-card" style="display:none">
+    <div class="ch">Documentar Visita</div>
+    <div class="cb">
+      <span class="fl">Notas de la visita</span>
+      <textarea id="cita-notas" placeholder="Observaciones de la visita..."></textarea>
+      <input type="file" accept="image/*" capture="environment" id="fi-cita" style="display:none" onchange="addCitaFoto(this)">
+      <button class="pbtn" id="cita-add-foto-btn" style="margin-top:10px" onclick="document.getElementById('fi-cita').click()">📷 Tomar/agregar foto (máx. 6)</button>
+      <div class="pgrid" id="cita-pgrid"></div>
+      <button class="bprev" id="cita-guardar-btn" style="display:block;margin-top:14px" onclick="guardarVisitaCita()">💾 Guardar visita</button>
+      <p id="cita-completada-msg" style="display:none;text-align:center;color:var(--green);font-weight:800;font-size:13px;margin-top:10px">✅ Visita y fotos guardadas</p>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -404,7 +486,9 @@ const REFS = [
   {cat:'Reglamento Complementario', id:'rc-ivk2', titulo:'Art. IV.K.2 — Caja del Medidor', texto:'La caja del medidor debe ser de acero galvanizado a prueba de intemperie, de tipo aprobado, ancho máximo 16 pulgadas, con mínimo 4 pulgadas de concreto hacia ambos lados. Las bases (muelas) deben estar en buenas condiciones, sin daños mecánicos ni corrosión.'},
   {cat:'Reglamento Complementario', id:'rc-ivo4', titulo:'Art. IV.O.4 — Altura del Medidor', texto:'Los contadores se instalarán a una altura no mayor de 7 pies y no menor de 5½ pies sobre el nivel del suelo desde donde se han de leer o inspeccionar.'},
   {cat:'Reglamento Complementario', id:'rc-viig', titulo:'Art. VII.G — Varilla de Tierra', texto:'El electrodo de tierra consiste de una varilla de acero de 8 pies de largo por 5/8 pulgada de diámetro, revestida de cobre. La varilla debe instalarse 6 pulgadas bajo el nivel del suelo. El conductor no debe quedar expuesto.'},
+  {cat:'NEC — CEPR', id:'nec-2302', titulo:'NEC Art. 230.2 — Una Sola Acometida (con Excepciones)', texto:'Regla general: a building or other structure served shall be supplied by only one service. El Artículo 230.2 reconoce excepciones específicas (230.2(A)-(D)): cargas especiales, servicios de emergencia/standby/legalmente requeridos, edificios con múltiples ocupantes bajo ciertas condiciones, y capacidad que exceda 2000A, entre otras. No debe presumirse automáticamente que una segunda acometida es ilegal — debe evaluarse si aplica alguna excepción reconocida y documentada.'},
   {cat:'NEC — CEPR', id:'nec-23024', titulo:'NEC Art. 230.24 — Clearances Acometida', texto:'Service-drop conductors minimum clearance from grade: 10 ft over areas accessible only to pedestrians, 12 ft over residential driveways, 18 ft over public streets subject to truck traffic.'},
+  {cat:'NEC — CEPR', id:'nec-23028', titulo:'NEC Art. 230.28 — Mástil de Acometida (Service Mast)', texto:'Cuando se utilice un mástil para soportar conductores de acometida aérea, este debe tener resistencia mecánica adecuada, o estar soportado por abrazaderas o retenidas (guy wires), para resistir con seguridad la tensión de los conductores de acometida. El NEC no establece una medida fija de exposición máxima (ej. 48 pulgadas); el criterio es de resistencia y soporte adecuados. El diámetro mínimo de 2 pulgadas para el tubo de acero galvanizado de toma aérea proviene del Reglamento Complementario AEE/LUMA (Art. IV.C.18), no del NEC 230.28.'},
   {cat:'NEC — CEPR', id:'nec-23043', titulo:'NEC Art. 230.43 — Tubo Mínimo 2\"', texto:'Rigid metal conduit used as service entrance raceway shall not be smaller than metric designator 53 (trade size 2). Secured with approved straps at intervals not exceeding 10 ft.'},
   {cat:'NEC — CEPR', id:'nec-25066', titulo:'NEC Art. 250.66 — Calibre Conductor Tierra', texto:'The size of the grounding electrode conductor shall not be less than given in Table 250.66, sized to the largest service-entrance conductor or equivalent for paralleled conductors.'},
   {cat:'NEC — CEPR', id:'nec-110-26', titulo:'NEC Art. 110.26 — Espacio de Trabajo', texto:'Working space minimum depth: 3 ft for equipment rated 0-150V to ground. Minimum width: 30 inches or width of equipment, whichever is greater. Minimum height: 6.5 ft.'},
@@ -413,10 +497,14 @@ const REFS = [
 function showMenuTab(t){
   document.getElementById('tab-insp').className='mtab'+(t==='insp'?' act':'');
   document.getElementById('tab-ref').className='mtab'+(t==='ref'?' act':'');
+  document.getElementById('tab-citas').className='mtab'+(t==='citas'?' act':'');
   document.getElementById('menu-cards').style.display=t==='insp'?'flex':'none';
   const rp=document.getElementById('ref-panel');
   rp.className='';
   if(t==='ref'){rp.classList.add('show');renderRefs('');}
+  const cp=document.getElementById('citas-panel');
+  cp.className='';
+  if(t==='citas'){cp.classList.add('show');cancelarFormCita();renderCitasList();}
 }
 
 function renderRefs(q){
@@ -481,7 +569,10 @@ const DEFS = {"rep":[{"cat":"TRABAJOS REALIZADOS","items":[
   {"id":"r_colores","desc":"Cumplimiento con código de colores en los conductores reparados o sustituidos.","codigo":"CEPR Art. 250.119 · NEC Art. 250.119 / 200.6","inp":false,"defName":"INCUMPLIMIENTO CON CÓDIGO DE COLORES DE CONDUCTORES","ceprArt":"Artículo 250.119 / Artículo V.B.4 — Reglamento Complementario","ceprText":"Neutral: blanco o gris claro. Tierra: verde con o sin rayas amarillas, o desnudo. Calibre #4 o mayor permite cable negro con cinta adhesiva del color correcto.","necArt":"Artículos 250.119 / 200.6 — National Electrical Code","necText":"Equipment grounding conductors shall be green or green with yellow stripes. Neutral conductors No. 6 AWG or smaller shall be white or gray.","accion":"Identificar todos los conductores conforme al código de colores. Corregir según NEC 250.119 y Reglamento Complementario V.B.4."},
   {"id":"r_breaker","desc":"Capacidad del breaker corresponde a la instalación reparada.","codigo":"CEPR Art. 240.6 · NEC Art. 240.6 / 240.4","inp":true,"inpLbl":"Capacidad instalada: ___ amperios","inpId":"inp_r_amp","defName":"TAMAÑO DEL BREAKER NO CORRESPONDE A LA INSTALACIÓN","ceprArt":"Artículo 240.6 / Sección VI — Reglamento Complementario","ceprText":"Los dispositivos de protección contra sobrecorriente deben ser del tamaño estándar correspondiente a la protección requerida.","necArt":"Artículo 240.6(A) / 240.4 — National Electrical Code","necText":"Standard ampere ratings: 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200 amperes.","accion":"Instalar el breaker del tamaño estándar correcto según la carga del servicio y el calibre de los conductores."},
   {"id":"r_altura","desc":"La altura del wire holder/acometida cumple con el Patrón M-5-A de Luma Energy.","codigo":"Estándar M-5-A Luma Energy · CEPR Art. 230.24 · NEC Art. 230.24","inp":true,"inpLbl":"Altura medida: ___","inpId":"inp_r_alt","defName":"ALTURA DE LA BASE (WIRE HOLDER) NO CUMPLE CON EL PATRÓN M-5-A","ceprArt":"Artículo 230.24 — CEPR / Estándar M-5-A Luma Energy","ceprText":"Altura mínima del wire holder: 19'0\" tránsito vehicular, 12'6\" acceso privado, 10'6\" peatonal.","necArt":"Artículo 230.24(B) — National Electrical Code","necText":"Service-drop conductors minimum clearance: 10 ft pedestrian areas, 12 ft residential driveways, 18 ft public streets.","accion":"Ajustar el wire holder para cumplir con Estándar M-5-A de Luma Energy."},
-  {"id":"r_cert","desc":"Certificación completada con todos los campos requeridos, firmada y sellada por el perito.","codigo":"Reglamento Complementario Art. II.D.4,8 · NEC Art. 110.3","inp":false,"defName":"CERTIFICACIÓN INCOMPLETA O CON DATOS INCORRECTOS","ceprArt":"Artículo II.D.4 / II.D.8 — Reglamento Complementario","ceprText":"Es requisito que todas las instalaciones modificadas o reparadas se certifiquen por un perito electricista colegiado antes de conectarse al sistema eléctrico.","necArt":"Artículo 110.3(B) — National Electrical Code","necText":"Equipment shall be installed and used in accordance with any instructions included in the listing or labeling.","accion":"Completar todos los campos de la certificación con firma y sello del perito. Someter antes de solicitar nueva inspección."}
+  {"id":"r_cert","desc":"Certificación completada con todos los campos requeridos, firmada y sellada por el perito.","codigo":"Reglamento Complementario Art. II.D.4,8 · NEC Art. 110.3","inp":false,"defName":"CERTIFICACIÓN INCOMPLETA O CON DATOS INCORRECTOS","ceprArt":"Artículo II.D.4 / II.D.8 — Reglamento Complementario","ceprText":"Es requisito que todas las instalaciones modificadas o reparadas se certifiquen por un perito electricista colegiado antes de conectarse al sistema eléctrico.","necArt":"Artículo 110.3(B) — National Electrical Code","necText":"Equipment shall be installed and used in accordance with any instructions included in the listing or labeling.","accion":"Completar todos los campos de la certificación con firma y sello del perito. Someter antes de solicitar nueva inspección."},
+  {"id":"r_tipo_base","desc":"El tipo de base de contador(es) fue identificado correctamente (sencilla, doble completa, triple completa, múltiple completa, o varias bases independientes) y la instalación corresponde a las especificaciones para ese tipo específico de base.","codigo":"Reglamento Complementario Art. IV.K.2 / IV.O.2 · Patrón K-7-3-1","inp":true,"inpType":"select","inpLbl":"Tipo de base observado","inpOptions":["Base sencilla","Base doble completa","Base triple completa","Base múltiple completa","Varias bases independientes"],"inpId":"inp_r_tipo_base","defName":"TIPO DE BASE DE CONTADOR NO IDENTIFICADO O NO CORRESPONDE A LA CONFIGURACIÓN INSTALADA","ceprArt":"Artículo IV.K.2 / IV.O.2 — Reglamento Complementario AEE/LUMA","ceprText":"Una base doble, triple o múltiple completa es una sola unidad fabricada para alojar 2, 3 o más contadores respectivamente, y debe evaluarse como esa unidad — no como bases sencillas independientes. Una base triple completa NO equivale a tres bases sencillas separadas. Cuando existan varias bases independientes (no una sola unidad múltiple), cada una debe evaluarse por separado conforme al Artículo IV.K.2.","necArt":"Artículo 230.72 / 110.21 — National Electrical Code","necText":"A meter enclosure listed for multiple meter positions is evaluated as one listed assembly for the number of positions actually installed, not as multiple independent single-meter enclosures.","accion":"Identificar correctamente el tipo de base instalado (sencilla, doble completa, triple completa, múltiple completa, o varias bases independientes) y verificar que la instalación cumple con las especificaciones correspondientes a esa configuración específica."}
+]},{"cat":"ACOMETIDA","items":[
+  {"id":"r_doble_acometida","desc":"No existe más de una acometida eléctrica independiente sirviendo el mismo edificio o estructura, salvo excepción permitida y debidamente documentada por el NEC.","codigo":"NEC 2017 Art. 230.2 · Reglamento Complementario Sección IV","inp":true,"inpLbl":"Si aplica excepción, describa fundamento/aprobación","inpId":"inp_r_doble_acom","defName":"DOBLE ACOMETIDA EN UN SOLO EDIFICIO O ESTRUCTURA SIN EXCEPCIÓN PERMITIDA","ceprArt":"Sección IV — Reglamento Complementario AEE/LUMA (acometidas)","ceprText":"Cada edificio o estructura debe ser servido por una sola acometida eléctrica, salvo que se demuestre y documente una condición excepcional reconocida y aprobada por la Autoridad.","necArt":"Artículo 230.2 — National Electrical Code (NEC 2017)","necText":"A building or other structure served shall be supplied by only one service. El NEC 230.2 reconoce excepciones específicas (230.2(A)-(D)): cargas especiales, servicios de emergencia/standby/legalmente requeridos, edificios con múltiples ocupantes bajo ciertas condiciones, capacidad que exceda 2000A, entre otras. La regla general es una acometida por edificio o estructura; no debe presumirse automáticamente que una segunda acometida es ilegal — debe evaluarse si aplica alguna excepción reconocida y documentada.","accion":"Eliminar o consolidar la acometida adicional, o presentar evidencia de una excepción permitida y debidamente aprobada."}
 ]}],
 "des":[{"cat":"UBICACIÓN Y COLUMNA","items":[
   {"id":"d_colindancia","desc":"La columna se encuentra a no más de 3 pies de la colindancia frontal con la calle.","codigo":"Reglamento Complementario Art. IV.D.14 · Patrón K-7-3-1","inp":false,"defName":"COLUMNA EXCEDE 3 PIES DE LA COLINDANCIA FRONTAL CON LA CALLE","ceprArt":"Artículo IV.D.14 — Reglamento Complementario / Patrón K-7-3-1","ceprText":"La columna estará dentro del terreno del solicitante a no más de 3 pies de la colindancia con la calle.","necArt":"Artículo 230.70 — National Electrical Code","necText":"The service disconnecting means shall be installed at a readily accessible location.","accion":"Relocalizar la columna a no más de 3 pies de la colindancia frontal con la calle, conforme al Reglamento Complementario Artículo IV.D.14."},
@@ -494,10 +585,13 @@ const DEFS = {"rep":[{"cat":"TRABAJOS REALIZADOS","items":[
   {"id":"d_wire_holder","desc":"El wire holder tiene mínimo 18 pulgadas desde el borde superior del techo o columna.","codigo":"Estándar M-5-A Luma Energy · NEC Art. 230.24(A)","inp":false,"defName":"WIRE HOLDER MENOR DE 18\" SOBRE BORDE SUPERIOR DEL TECHO O COLUMNA","ceprArt":"Estándar M-5-A — Luma Energy (Lista de Cotejo Núm. 4375.044)","ceprText":"El wire holder debe tener mínimo 18 pulgadas desde el borde superior del techo o columna, según el Estándar M-5-A de Luma Energy.","necArt":"Artículo 230.24(A) — National Electrical Code","necText":"Conductors shall have a vertical clearance of not less than 2.5 m (8 ft) above the roof surface, salvo las excepciones de techos con pendiente o áreas no transitables establecidas en 230.24(A).","accion":"Ajustar el wire holder para que quede a mínimo 18 pulgadas desde el borde superior, conforme al Estándar M-5-A de Luma Energy."},
   {"id":"d_topografia","desc":"Área de trabajo plana y libre de obstáculos mínimo 3'0\"×3'0\" frente al contador.","codigo":"NEC Art. 110.26 · Patrón K-7-3-1","inp":false,"defName":"CONDICIÓN TOPOGRÁFICA INADECUADA — ÁREA DE TRABAJO INSUFICIENTE","ceprArt":"Patrón K-7-3-1 — Luma Energy","ceprText":"El área frente a la columna debe ser plana y libre de obstáculos, mínimo 3'0\" × 3'0\", pendiente máxima 2%.","necArt":"Artículo 110.26(A)(1) — National Electrical Code","necText":"Working space minimum depth: 3 ft. Minimum width: 30 inches or equipment width, whichever is greater.","accion":"Preparar área de trabajo plana de mínimo 3'0\" × 3'0\" con pendiente máxima 2% frente al contador."}
 ]},{"cat":"TUBO DE SOPORTE Y MEDIDOR","items":[
-  {"id":"d_tubo","desc":"El tubo de soporte es rígido galvanizado, diámetro mínimo 2\", no expuesto más de 48 pulgadas.","codigo":"Reglamento Complementario Sección IV, Art. D.6 y Art. F.4 · NEC Art. 230.43","inp":false,"defName":"TUBO INSUFICIENTE (< 2\") O EXPOSICIÓN EXCESIVA (> 48\")","ceprArt":"Sección IV, Artículo D, Inciso 6 / Artículo F, Inciso 4 — Reglamento Complementario AEE/LUMA","ceprText":"El diámetro de toda la tubería asociada a un servicio no será menor de dos (2) pulgadas. El tubo cerca de la base deberá protegerse contra golpes y corrosión.","necArt":"Artículo 230.43 — National Electrical Code","necText":"Service-entrance conductors shall be installed using a recognized wiring method under 230.43 (RMC, IMC, EMT, PVC, entre otros), sized per the conductor ampacity requirements of this Code.","accion":"Sustituir el tubo por acero rígido galvanizado ≥ 2\", exposición máxima 48 pulgadas, conforme al Reglamento Complementario Sección IV."},
+  {"id":"d_tubo","desc":"El tubo/mástil de soporte de la acometida aérea es de acero rígido galvanizado, con diámetro no menor de 2 pulgadas cuando aplique el Reglamento Complementario, y cuenta con la resistencia mecánica, soporte y abrazaderas o retenidas necesarias para la tensión de los conductores de acometida.","codigo":"Reglamento Complementario Sección IV, Art. D.6, F.4 y C.18 · NEC 2017 Art. 230.28","inp":false,"defName":"MÁSTIL/TUBO DE ACOMETIDA SIN RESISTENCIA MECÁNICA, SOPORTE O DIÁMETRO ADECUADO","ceprArt":"Sección IV, Artículo D.6 / F.4 / C.18 — Reglamento Complementario AEE/LUMA","ceprText":"El tubo de acero galvanizado de toma aérea no debe indicarse menor de dos (2) pulgadas de diámetro cuando aplique este criterio del Reglamento Complementario. Debe estar afianzado con abrazaderas adecuadas y aprobadas por la Autoridad, con resistencia suficiente para soportar la tensión de los conductores de acometida sin doblarse.","necArt":"Artículo 230.28 — National Electrical Code (NEC 2017)","necText":"Where a service mast is used for the support of service-drop or overhead service conductors, it shall be of adequate mechanical strength, or be supported by braces or guy wires, to withstand safely the strain imposed by the service conductors. El NEC 2017 Art. 230.28 no establece una medida fija de exposición máxima (como '48 pulgadas') para el mástil de 2 pulgadas; el criterio del NEC es de resistencia mecánica y soporte adecuados, no una longitud expuesta específica.","accion":"Reforzar o sustituir el mástil/tubo de acometida para que cuente con resistencia mecánica adecuada, soporte y abrazaderas o retenidas (guy wires) según sea necesario para la tensión de los conductores, y verificar que el diámetro no sea menor de 2 pulgadas cuando aplique el Reglamento Complementario correspondiente."},
   {"id":"d_altura_med","desc":"El centro del medidor entre 5'6\" y 7'0\" de altura.","codigo":"Reglamento Complementario Art. IV.O.4 · Lista de Cotejo 4375.044","inp":true,"inpLbl":"Altura del centro del medidor: ___","inpId":"inp_d_altm","defName":"ALTURA DEL CENTRO DEL MEDIDOR FUERA DEL RANGO (5'6\" – 7'0\")","ceprArt":"Artículo IV.O.4 — Reglamento Complementario","ceprText":"Los contadores se instalarán a altura no mayor de 7 pies y no menor de 5½ pies sobre el nivel del suelo.","necArt":"Artículo 230.70(A)(1) — National Electrical Code","necText":"The service disconnecting means shall be installed at a readily accessible location.","accion":"Ajustar la montura del medidor para que el centro quede entre 5'6\" y 7'0\" de altura."},
   {"id":"d_caja","desc":"Caja del medidor de acero galvanizado, máximo 16\" de ancho, mínimo 4\" de concreto a ambos lados.","codigo":"Reglamento Complementario Art. IV.K.2 · Patrón K-7-3-1","inp":false,"defName":"CAJA DEL MEDIDOR NO CUMPLE CON ESPECIFICACIONES REQUERIDAS","ceprArt":"Artículo IV.K.2 — Reglamento Complementario","ceprText":"Caja de acero galvanizado a prueba de intemperie, máximo 16\" de ancho, mínimo 4\" de concreto a ambos lados.","necArt":"Artículo 230.66 / 312.2 — National Electrical Code","necText":"Service equipment shall be listed and rated for the voltage and current. Enclosures in wet locations shall prevent moisture accumulation.","accion":"Sustituir la caja por una de acero galvanizado aprobada, máximo 16\" con mínimo 4\" de concreto a ambos lados."},
-  {"id":"d_muelas","desc":"Las muelas (contactos de la base del contador) están en buen estado, sin daños ni contactos abiertos.","codigo":"Reglamento Complementario Sección IV, Art. K.1-2 · NEC Art. 110.12(B) / 230.66","inp":false,"defName":"MUELAS (CONTACTOS DE BASE DEL CONTADOR) DAÑADAS O CONTACTOS ABIERTOS","ceprArt":"Sección IV, Artículo K, Incisos 1 y 2 — Reglamento Complementario AEE/LUMA","ceprText":"La Autoridad aprobará únicamente monturas preparadas con bases de metal o cajas de metal para contadores provistas de enchufes para contadores en instalaciones monofásicas y trifásicas. La base o bases y cajas de metal para contadores suministradas por el cliente deberán construirse de acero galvanizado y a prueba de intemperie, de un tipo aprobado por la Autoridad.","necArt":"Artículos 110.12(B) / 230.66 — National Electrical Code","necText":"NEC 110.12(B), Integrity of Electrical Equipment and Connections: Internal parts of electrical equipment, including busbars, wiring terminals, insulators, and other surfaces, shall not be damaged. There shall be no damaged parts that may adversely affect safe operation, such as parts that are broken, bent, cut, or deteriorated by corrosion, chemical action, or overheating. NEC 230.66: Individual meter socket enclosures shall be listed and rated for the voltage and ampacity of the service.","accion":"Sustituir las muelas que presenten contactos abiertos, rotos, doblados, cortados, quemados o deteriorados por corrosión, por unas nuevas de tipo aprobado por Luma Energy, conforme al Reglamento Complementario Sección IV, Artículo K, y NEC Artículo 110.12(B)."}
+  {"id":"d_muelas","desc":"Las muelas (contactos de la base del contador) están en buen estado, sin daños ni contactos abiertos.","codigo":"Reglamento Complementario Sección IV, Art. K.1-2 · NEC Art. 110.12(B) / 230.66","inp":false,"defName":"MUELAS (CONTACTOS DE BASE DEL CONTADOR) DAÑADAS O CONTACTOS ABIERTOS","ceprArt":"Sección IV, Artículo K, Incisos 1 y 2 — Reglamento Complementario AEE/LUMA","ceprText":"La Autoridad aprobará únicamente monturas preparadas con bases de metal o cajas de metal para contadores provistas de enchufes para contadores en instalaciones monofásicas y trifásicas. La base o bases y cajas de metal para contadores suministradas por el cliente deberán construirse de acero galvanizado y a prueba de intemperie, de un tipo aprobado por la Autoridad.","necArt":"Artículos 110.12(B) / 230.66 — National Electrical Code","necText":"NEC 110.12(B), Integrity of Electrical Equipment and Connections: Internal parts of electrical equipment, including busbars, wiring terminals, insulators, and other surfaces, shall not be damaged. There shall be no damaged parts that may adversely affect safe operation, such as parts that are broken, bent, cut, or deteriorated by corrosion, chemical action, or overheating. NEC 230.66: Individual meter socket enclosures shall be listed and rated for the voltage and ampacity of the service.","accion":"Sustituir las muelas que presenten contactos abiertos, rotos, doblados, cortados, quemados o deteriorados por corrosión, por unas nuevas de tipo aprobado por Luma Energy, conforme al Reglamento Complementario Sección IV, Artículo K, y NEC Artículo 110.12(B)."},
+  {"id":"d_tipo_base","desc":"El tipo de base de contador(es) fue identificado correctamente (sencilla, doble completa, triple completa, múltiple completa, o varias bases independientes) y la instalación corresponde a las especificaciones para ese tipo específico de base.","codigo":"Reglamento Complementario Art. IV.K.2 / IV.O.2 · Patrón K-7-3-1","inp":true,"inpType":"select","inpLbl":"Tipo de base observado","inpOptions":["Base sencilla","Base doble completa","Base triple completa","Base múltiple completa","Varias bases independientes"],"inpId":"inp_d_tipo_base","defName":"TIPO DE BASE DE CONTADOR NO IDENTIFICADO O NO CORRESPONDE A LA CONFIGURACIÓN INSTALADA","ceprArt":"Artículo IV.K.2 / IV.O.2 — Reglamento Complementario AEE/LUMA","ceprText":"Una base doble, triple o múltiple completa es una sola unidad fabricada para alojar 2, 3 o más contadores respectivamente, y debe evaluarse como esa unidad — no como bases sencillas independientes. Una base triple completa NO equivale a tres bases sencillas separadas. Cuando existan varias bases independientes (no una sola unidad múltiple), cada una debe evaluarse por separado conforme al Artículo IV.K.2.","necArt":"Artículo 230.72 / 110.21 — National Electrical Code","necText":"A meter enclosure listed for multiple meter positions is evaluated as one listed assembly for the number of positions actually installed, not as multiple independent single-meter enclosures.","accion":"Identificar correctamente el tipo de base instalado (sencilla, doble completa, triple completa, múltiple completa, o varias bases independientes) y verificar que la instalación cumple con las especificaciones correspondientes a esa configuración específica."}
+]},{"cat":"ACOMETIDA","items":[
+  {"id":"d_doble_acometida","desc":"No existe más de una acometida eléctrica independiente sirviendo el mismo edificio o estructura, salvo excepción permitida y debidamente documentada por el NEC.","codigo":"NEC 2017 Art. 230.2 · Reglamento Complementario Sección IV","inp":true,"inpLbl":"Si aplica excepción, describa fundamento/aprobación","inpId":"inp_d_doble_acom","defName":"DOBLE ACOMETIDA EN UN SOLO EDIFICIO O ESTRUCTURA SIN EXCEPCIÓN PERMITIDA","ceprArt":"Sección IV — Reglamento Complementario AEE/LUMA (acometidas)","ceprText":"Cada edificio o estructura debe ser servido por una sola acometida eléctrica, salvo que se demuestre y documente una condición excepcional reconocida y aprobada por la Autoridad.","necArt":"Artículo 230.2 — National Electrical Code (NEC 2017)","necText":"A building or other structure served shall be supplied by only one service. El NEC 230.2 reconoce excepciones específicas (230.2(A)-(D)): cargas especiales, servicios de emergencia/standby/legalmente requeridos, edificios con múltiples ocupantes bajo ciertas condiciones, capacidad que exceda 2000A, entre otras. La regla general es una acometida por edificio o estructura; no debe presumirse automáticamente que una segunda acometida es ilegal — debe evaluarse si aplica alguna excepción reconocida y documentada.","accion":"Eliminar o consolidar la acometida adicional, o presentar evidencia de una excepción permitida y debidamente aprobada."}
 ]},{"cat":"PUESTA A TIERRA","items":[
   {"id":"d_tierra","desc":"Varilla a tierra instalada 6 pulgadas bajo el suelo, cable no expuesto.","codigo":"CEPR Art. 250.52 · NEC Art. 250.52/250.53 · Reg. Comp. Art. VII.G","inp":true,"inpLbl":"Calibre conductor: ___ | Color: ___","inpId":"inp_d_tierra","defName":"ELECTRODO (VARILLA) DE PUESTA A TIERRA DEFICIENTE O CONDUCTOR EXPUESTO","ceprArt":"Artículo 250.52 / Artículo VII.G — Reglamento Complementario","ceprText":"Varilla de 5/8\" × 8 pies de acero revestido de cobre, instalada 6 pulgadas bajo el suelo. Conductor no expuesto.","necArt":"Artículo 250.52(A)(5) / 250.53(G) — National Electrical Code","necText":"Rod electrodes shall be not less than 5/8 in. diameter and 8 ft in length. Embedded below permanent moisture level.","accion":"Instalar varilla de 5/8\" × 8 pies a 6 pulgadas bajo el suelo. Proteger el conductor para que no quede expuesto."},
   {"id":"d_cal_tierra","desc":"Calibre del conductor de puesta a tierra adecuado según la Tabla 250.66.","codigo":"CEPR Art. 250.66 · NEC Tabla 250.66","inp":false,"defName":"CALIBRE DE CONDUCTOR DE PUESTA A TIERRA INCORRECTO","ceprArt":"Artículo 250.66 / Artículo VII.C — Reglamento Complementario","ceprText":"El conductor de puesta a tierra será de cobre con calibre no menor al establecido en la Tabla 250.66.","necArt":"Artículo 250.66 / Tabla 250.66 — National Electrical Code","necText":"The size of the grounding electrode conductor shall not be less than given in Table 250.66.","accion":"Sustituir el conductor por cobre del calibre correcto según Tabla 250.66."}
@@ -511,6 +605,232 @@ const DEFS = {"rep":[{"cat":"TRABAJOS REALIZADOS","items":[
 ]}]};
 
 let tipo=null,estado={},fotos={},rechazado=false,lista=[],comFotos=[];
+
+// ===== CITAS CON PERITOS =====
+const CITAS_KEY='lumaCitasPeritos_v1';
+let citas=[];
+let citaActualId=null;
+let citaFotosNuevas=[];   // fotos ya comprimidas de la visita en pantalla (working copy)
+let citaFotosPendientes=0; // conteo de fotos aún procesándose en el canvas
+let citaSoloLectura=false;
+
+function escapeHtml(str){
+  return String(str==null?'':str).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function cargarCitas(){
+  try{
+    const raw=localStorage.getItem(CITAS_KEY);
+    citas=raw?JSON.parse(raw):[];
+  }catch(e){
+    citas=[];
+  }
+}
+cargarCitas();
+
+function guardarCitasStorage(){
+  localStorage.setItem(CITAS_KEY,JSON.stringify(citas)); // puede lanzar si no hay espacio
+}
+
+function irMenuCitas(){
+  document.getElementById('cita-view').style.display='none';
+  document.getElementById('menu').className='on';
+  showMenuTab('citas');
+}
+
+function mostrarFormCita(){
+  document.getElementById('citas-form').style.display='block';
+  document.getElementById('citas-list').style.display='none';
+}
+function cancelarFormCita(){
+  const form=document.getElementById('citas-form');
+  const list=document.getElementById('citas-list');
+  if(form)form.style.display='none';
+  if(list)list.style.display='block';
+  ['cf-cliente','cf-direccion','cf-perito','cf-licencia','cf-fecha','cf-hora'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+}
+
+function crearCita(){
+  const cliente=document.getElementById('cf-cliente').value.trim();
+  if(!cliente){toast('Ingrese el nombre del cliente');return}
+  const nueva={
+    id:'c'+Date.now()+Math.random().toString(36).slice(2,7),
+    cliente,
+    direccion:document.getElementById('cf-direccion').value.trim(),
+    perito:document.getElementById('cf-perito').value.trim(),
+    licencia:document.getElementById('cf-licencia').value.trim(),
+    fecha:document.getElementById('cf-fecha').value,
+    hora:document.getElementById('cf-hora').value,
+    estado:'pendiente',
+    llegadaTs:null,
+    notas:'',
+    fotos:[],
+    guardadaTs:null
+  };
+  citas.unshift(nueva);
+  try{
+    guardarCitasStorage();
+  }catch(e){
+    citas.shift();
+    toast('⛔ No se pudo guardar la cita: espacio de almacenamiento lleno');
+    return;
+  }
+  cancelarFormCita();
+  renderCitasList();
+  toast('Cita creada ✓');
+}
+
+function renderCitasList(){
+  const el=document.getElementById('citas-list');
+  if(!el)return;
+  if(!citas.length){
+    el.innerHTML='<p style="color:rgba(255,255,255,.5);font-size:12px;text-align:center;padding:20px 0">No hay citas registradas.</p>';
+    return;
+  }
+  el.innerHTML=citas.map(c=>{
+    const estLbl=c.estado==='completada'?'✅ Documentada':c.estado==='llegue'?'📍 En sitio':'⏳ Pendiente';
+    const estCls=c.estado==='completada'?'done':c.estado==='llegue'?'llegue':'pend';
+    const fh=[c.fecha,c.hora].filter(Boolean).join(' ');
+    return `<div class="ref-item" onclick="abrirCita('${c.id}')"><h4>${escapeHtml(c.cliente)}</h4><p>${escapeHtml(c.direccion||'Sin dirección')}${fh?' · '+escapeHtml(fh):''}</p><p class="cita-estado ${estCls}">${estLbl}</p></div>`;
+  }).join('');
+}
+
+function abrirCita(id){
+  const c=citas.find(x=>x.id===id);
+  if(!c)return;
+  citaActualId=id;
+  citaFotosNuevas=(c.fotos||[]).slice();
+  citaFotosPendientes=0;
+  citaSoloLectura=c.estado==='completada';
+
+  document.getElementById('cv-inspector').textContent=currentUser?currentUser.nombre:'—';
+  document.getElementById('cv-cliente').textContent=c.cliente;
+  document.getElementById('cv-direccion').textContent=c.direccion||'—';
+  document.getElementById('cv-perito').textContent=c.perito?c.perito+(c.licencia?' · Lic. '+c.licencia:''):'—';
+  document.getElementById('cv-fecha').textContent=[c.fecha,c.hora].filter(Boolean).join(' ')||'—';
+
+  const badge=document.getElementById('cv-badge');
+  badge.textContent=c.estado==='completada'?'DOCUMENTADA':c.estado==='llegue'?'EN SITIO':'PENDIENTE';
+  badge.className='hbadge '+(c.estado==='completada'?'des':c.estado==='llegue'?'rep':'pend');
+
+  document.getElementById('cita-llegar-card').style.display=c.estado==='pendiente'?'block':'none';
+  document.getElementById('cita-doc-card').style.display=(c.estado==='llegue'||c.estado==='completada')?'block':'none';
+
+  const notasEl=document.getElementById('cita-notas');
+  notasEl.value=c.notas||'';
+  notasEl.disabled=citaSoloLectura;
+
+  document.getElementById('cita-guardar-btn').style.display=citaSoloLectura?'none':'block';
+  document.getElementById('cita-completada-msg').style.display=citaSoloLectura?'block':'none';
+
+  renderCitaFotos();
+  actualizarBotonGuardarCita();
+
+  document.getElementById('menu').className='';
+  document.getElementById('insp').style.display='none';
+  document.getElementById('prev').style.display='none';
+  document.getElementById('cita-view').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function marcarLlegue(){
+  const c=citas.find(x=>x.id===citaActualId);
+  if(!c)return;
+  const estadoPrevio=c.estado,llegadaPrevia=c.llegadaTs;
+  c.estado='llegue';
+  c.llegadaTs=Date.now();
+  try{
+    guardarCitasStorage();
+  }catch(e){
+    c.estado=estadoPrevio;c.llegadaTs=llegadaPrevia;
+    toast('⛔ No se pudo registrar la llegada: espacio de almacenamiento lleno');
+    return;
+  }
+  toast('Llegada registrada ✓');
+  abrirCita(citaActualId);
+}
+
+function addCitaFoto(inp){
+  if(!inp.files||!inp.files.length)return;
+  const espacioDisponible=6-citaFotosNuevas.length-citaFotosPendientes;
+  if(espacioDisponible<=0){
+    toast('⛔ Máximo 6 fotos por visita');
+    inp.value='';
+    return;
+  }
+  const archivos=Array.from(inp.files).slice(0,espacioDisponible);
+  archivos.forEach(file=>{
+    citaFotosPendientes++;
+    actualizarBotonGuardarCita();
+    const r=new FileReader();
+    r.onload=e=>{
+      comprimirImagen(e.target.result,1280,0.7,(imgComprimida)=>{
+        citaFotosNuevas.push(imgComprimida);
+        citaFotosPendientes--;
+        renderCitaFotos();
+        actualizarBotonGuardarCita();
+        toast('Foto agregada ✓');
+      });
+    };
+    r.onerror=()=>{
+      citaFotosPendientes--;
+      actualizarBotonGuardarCita();
+      toast('⛔ Error al leer una foto — intente de nuevo');
+    };
+    r.readAsDataURL(file);
+  });
+  inp.value='';
+}
+
+function delCitaFoto(idx){
+  if(citaSoloLectura)return;
+  citaFotosNuevas.splice(idx,1);
+  renderCitaFotos();
+  actualizarBotonGuardarCita();
+}
+
+function renderCitaFotos(){
+  const g=document.getElementById('cita-pgrid');
+  if(!g)return;
+  g.innerHTML=citaFotosNuevas.map((img,idx)=>`<div class="ptw"><img src="${img}" class="pth">${citaSoloLectura?'':`<button class="pdel" onclick="delCitaFoto(${idx})">✕</button>`}</div>`).join('');
+  const addBtn=document.getElementById('cita-add-foto-btn');
+  if(addBtn)addBtn.style.display=(citaSoloLectura||citaFotosNuevas.length+citaFotosPendientes>=6)?'none':'flex';
+}
+
+function actualizarBotonGuardarCita(){
+  const btn=document.getElementById('cita-guardar-btn');
+  if(!btn||citaSoloLectura)return;
+  if(citaFotosPendientes>0){
+    btn.disabled=true;
+    btn.textContent='⏳ Procesando fotos...';
+  }else{
+    btn.disabled=false;
+    btn.textContent='💾 Guardar visita';
+  }
+}
+
+function guardarVisitaCita(){
+  if(citaFotosPendientes>0){
+    toast('⏳ Espere a que terminen de procesarse las fotos');
+    return;
+  }
+  const c=citas.find(x=>x.id===citaActualId);
+  if(!c)return;
+  const notasPrevias=c.notas,fotosPrevias=c.fotos,estadoPrevio=c.estado,guardadaPrevia=c.guardadaTs;
+  c.notas=document.getElementById('cita-notas').value;
+  c.fotos=citaFotosNuevas.slice();
+  c.estado='completada';
+  c.guardadaTs=Date.now();
+  try{
+    guardarCitasStorage();
+  }catch(e){
+    c.notas=notasPrevias;c.fotos=fotosPrevias;c.estado=estadoPrevio;c.guardadaTs=guardadaPrevia;
+    toast('⛔ Espacio de almacenamiento lleno — no se guardó la visita. Elimine alguna foto o libere espacio e intente de nuevo.');
+    return;
+  }
+  toast('Visita y fotos guardadas ✓');
+  abrirCita(citaActualId);
+}
 
 function irMenu(){
   document.getElementById('menu').className='on';
@@ -544,7 +864,8 @@ function renderCL(){
     const l=document.createElement('div');l.className='slbl';l.textContent=cat.cat;b.appendChild(l);
     cat.items.forEach(item=>{
       const el=document.createElement('div');el.className='ci';el.id='ci-'+item.id;
-      const ex=item.inp?`<div class="iex" id="ie-${item.id}"><div class="iexl">${item.inpLbl}</div><input type="text" id="${item.inpId}" placeholder="${item.inpLbl}"></div>`:'';
+      const inpCtrl=item.inpType==='select'?`<select id="${item.inpId}"><option value="">Seleccione...</option>${item.inpOptions.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`:`<input type="text" id="${item.inpId}" placeholder="${item.inpLbl}">`;
+      const ex=item.inp?`<div class="iex" id="ie-${item.id}"><div class="iexl">${item.inpLbl}</div>${inpCtrl}</div>`:'';
       el.innerHTML=`<div class="cdesc">${item.desc}</div><div class="ccode">${item.codigo}</div>${ex}<div class="ibtns"><button class="ibtn" onclick="si('${item.id}','ok')">✓ CUMPLE</button><button class="ibtn" onclick="si('${item.id}','nc')">✗ NO CUMPLE</button><button class="ibtn" onclick="si('${item.id}','na')">— N/A</button></div><div class="pwrap" id="pw-${item.id}"><input type="file" accept="image/*" id="fi-${item.id}" style="display:none" onchange="addF('${item.id}',this)"><button class="pbtn" onclick="document.getElementById('fi-${item.id}').click()">📷 Agregar foto (cámara o galería)</button><div class="pgrid" id="pg-${item.id}"></div></div>`;
       b.appendChild(el);
     });
@@ -588,13 +909,15 @@ function getDefs(){
   return d;
 }
 
-function comprimirImagen(dataUrl, maxAncho, calidad, callback){
+function comprimirImagen(dataUrl, maxLado, calidad, callback){
   const img = new Image();
   img.onload = () => {
     let w = img.width, h = img.height;
-    if(w > maxAncho){
-      h = Math.round(h * (maxAncho / w));
-      w = maxAncho;
+    const ladoMayor = Math.max(w, h);
+    if(ladoMayor > maxLado){
+      const factor = maxLado / ladoMayor;
+      w = Math.round(w * factor);
+      h = Math.round(h * factor);
     }
     const canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;
