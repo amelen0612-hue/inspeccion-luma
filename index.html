@@ -49,8 +49,23 @@ async function obtenerSesionCampo(){
 function abrirNavegacionMismaPestana(url){
   const destino=new URL(url,location.href);
   if(destino.protocol!=='https:'||destino.hostname!=='www.google.com'||destino.pathname!=='/maps/dir/')throw new Error('Destino de navegación no permitido');
+  const origen=destino.searchParams.get('origin');
+  const llegada=destino.searchParams.get('destination');
+  if(!origen||!llegada)throw new Error('La navegación no contiene origen y destino');
+  const nativo=new URL('comgooglemaps://');
+  nativo.searchParams.set('saddr',origen);
+  nativo.searchParams.set('daddr',llegada);
+  nativo.searchParams.set('directionsmode','driving');
   try{history.replaceState(null,'','#ruta');}catch(e){}
-  location.assign(destino.href);
+  let mapsAbierto=false;
+  const detectarSalida=()=>{if(document.hidden)mapsAbierto=true;};
+  document.addEventListener('visibilitychange',detectarSalida);
+  try{location.href=nativo.href;}
+  catch(e){document.removeEventListener('visibilitychange',detectarSalida);location.assign(destino.href);return;}
+  setTimeout(()=>{
+    document.removeEventListener('visibilitychange',detectarSalida);
+    if(!mapsAbierto&&!document.hidden)location.assign(destino.href);
+  },1500);
 }
 window.addEventListener('pageshow',()=>{if(!window.CAMPO_AUTH_RECOVERY)obtenerSesionCampo();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!window.CAMPO_AUTH_RECOVERY)obtenerSesionCampo();});

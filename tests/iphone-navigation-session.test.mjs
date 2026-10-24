@@ -95,22 +95,65 @@ test('el contenedor restaura la sesión con reintentos acotados al volver de iPh
   assert.equal(calls, 3);
 });
 
-test('solo se permite Google Maps y la ruta interna queda preparada para el regreso', () => {
+test('abre el esquema nativo, conserva #ruta y cancela HTTPS cuando Maps toma el control', () => {
   const navigateFunction = extractFunction(source, 'abrirNavegacionMismaPestana');
   const assigned = [];
   const replaced = [];
+  const timers = [];
+  const listeners = new Map();
+  let nativeUrl = '';
+  const location = { assign: (url) => assigned.push(url) };
+  Object.defineProperty(location, 'href', {
+    get: () => nativeUrl || 'https://campo.example/#ruta',
+    set: (url) => { nativeUrl = url; },
+  });
+  const document = {
+    hidden: false,
+    addEventListener: (name, callback) => listeners.set(name, callback),
+    removeEventListener: (name) => listeners.delete(name),
+  };
   const context = {
     URL,
-    location: { href: 'https://campo.example/#ruta', assign: (url) => assigned.push(url) },
+    location,
+    document,
+    setTimeout: (callback) => { timers.push(callback); },
     history: { replaceState: (...args) => replaced.push(args) },
     Error,
   };
   vm.createContext(context);
   vm.runInContext(`${navigateFunction}; globalThis.go=abrirNavegacionMismaPestana;`, context);
-  context.go('https://www.google.com/maps/dir/?api=1&destination=18,-66');
-  assert.equal(assigned.length, 1);
+  context.go('https://www.google.com/maps/dir/?api=1&origin=18.4%2C-66.1&destination=18.5%2C-66.2&travelmode=driving');
+  assert.match(nativeUrl, /^comgooglemaps:\/\//);
+  assert.match(nativeUrl, /saddr=18.4%2C-66.1/);
+  assert.match(nativeUrl, /daddr=18.5%2C-66.2/);
   assert.equal(replaced[0][2], '#ruta');
+  document.hidden = true;
+  listeners.get('visibilitychange')();
+  timers[0]();
+  assert.equal(assigned.length, 0, 'no debe abrir HTTPS cuando Google Maps ocultó Edge');
   assert.throws(() => context.go('https://example.com/maps/dir/?api=1'), /no permitido/);
+});
+
+test('usa HTTPS en la misma pestaña si el esquema nativo no abre Google Maps', () => {
+  const navigateFunction = extractFunction(source, 'abrirNavegacionMismaPestana');
+  const assigned = [];
+  const timers = [];
+  const location = { assign: (url) => assigned.push(url) };
+  Object.defineProperty(location, 'href', { get: () => 'https://campo.example/#ruta', set: () => {} });
+  const context = {
+    URL,
+    location,
+    document: { hidden: false, addEventListener: () => {}, removeEventListener: () => {} },
+    setTimeout: (callback) => { timers.push(callback); },
+    history: { replaceState: () => {} },
+    Error,
+  };
+  vm.createContext(context);
+  vm.runInContext(`${navigateFunction}; globalThis.go=abrirNavegacionMismaPestana;`, context);
+  context.go('https://www.google.com/maps/dir/?api=1&origin=18.4%2C-66.1&destination=18.5%2C-66.2&travelmode=driving');
+  timers[0]();
+  assert.equal(assigned.length, 1);
+  assert.match(assigned[0], /^https:\/\/www\.google\.com\/maps\/dir\//);
 });
 
 test('optimizador, coordenadas, orden y sincronización conservan la versión estable', () => {
