@@ -35,3 +35,10 @@ Búsqueda solo al pulsar «Buscar», mínimo 3 letras. Atribución: «Powered by
 
 ## Comportamiento de omitidas (sin cambios, documentado)
 Al reoptimizar, una parada omitida es pendiente y vuelve a entrar como parada normal (pierde la marca de omitida).
+
+## Plan de publicación, respaldo y reversión (24 oct 2026)
+Respaldo previo: `inspeccion-luma-parche/respaldo-produccion-170945f/` (bundle de `main`, `index.html` y SHA-256 `dffd9c7d…f33fc`, idéntico a GitHub Pages).
+Supabase antes del cambio: funciones `routexl-optimize` (v3), `ors-optimize` (v2), `generar-partidario` (v10), `subir-privado-temp` (v2); no existe `places-search`.
+Orden de ejecución: (1) el usuario guarda `GEOAPIFY_API_KEY` en Supabase → Edge Functions → Secrets; (2) desplegar `places-search` (verify_jwt activado, sin tocar las demás funciones);
+(3) comprobar que sin sesión responde 401; (4) fusionar `index.html` en `main` por fast-forward; (5) una búsqueda real con sesión iniciada.
+Reversión: `git revert <merge>` y push (restaura `170945f`); `places-search` queda inerte sin el frontend y puede eliminarse desde el panel de Supabase.
