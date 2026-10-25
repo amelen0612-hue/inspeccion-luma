@@ -129,7 +129,7 @@ test('menús y barra inferior idénticos a producción; solo se añadieron el bo
   const a = cabeza(antes), ahora = cabeza(route);
   assert.deepEqual(a.filter((l) => !ahora.includes(l)), [], 'no se quitó ninguna línea de maqueta ni de estilos');
   const nuevas = ahora.filter((l) => !a.includes(l));
-  for (const l of nuevas) assert.ok([/^\.parada-/, /^\.ruta-acciones\.una/, /^<div class="ruta-acciones una"><button type="button" id="btn-anadir-parada"/].some((p) => p.test(l)), `añadido no previsto: ${l.slice(0, 80)}`);
+  for (const l of nuevas) assert.ok([/^\.parada-/, /^\.geo-box\.parada-resumen/, /^\/\* \.geo-box/, /^\.ruta-acciones\.una/, /^<div class="ruta-acciones una"><button type="button" id="btn-anadir-parada"/].some((p) => p.test(l)), `añadido no previsto: ${l.slice(0, 80)}`);
 });
 
 test('producción no recibe datos ficticios, optimizador simulado, aislamiento ni claves', () => {
@@ -140,7 +140,7 @@ test('producción no recibe datos ficticios, optimizador simulado, aislamiento n
 });
 
 test('el resumen de confirmación se ajusta al ancho del iPhone (texto largo se parte en lugar de recortarse)', () => {
-  const css = /\.parada-resumen\{[^}]*\}/.exec(route)[0];
+  const css = /\.geo-box\.parada-resumen\{[^}]*\}/.exec(route)[0];
   assert.match(css, /display:block/); assert.match(css, /overflow-wrap:anywhere/); assert.match(css, /white-space:normal/);
-  assert.match(route, /\.parada-resumen>div\{[^}]*max-width:100%/);
+  assert.match(route, /\.geo-box\.parada-resumen>div\{[^}]*max-width:100%/);
 });
