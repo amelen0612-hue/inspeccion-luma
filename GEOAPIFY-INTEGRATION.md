@@ -41,4 +41,6 @@ Pruebas específicas de transporte de sesión, renovación de token y conservaci
 
 En la vista temporal, con una sesión real iniciada por el usuario, se buscó **Walmart Cayey** desde «+ Añadir parada». El endpoint autenticado devolvió **Walmart Supercenter**, dirección en Cayey, PR 00737, coordenadas **18.122479, -66.133770**, fuente **Geoapify · OpenStreetMap**. Se abrió la confirmación del resultado; no se añadió una parada ni se abrió navegación. Una búsqueda real, sin guardar tokens o claves en registros, archivos o GitHub.
 
-Despliegue verificado: `105925ba1d354ecfbe1118b9dc4bc06b`.
+Versión verificada: `105925ba-1d35-4ecf-be11-18b9dc4bc06b` (100 %). Deployment activo: `03964798-a6b5-47fb-aa4b-decd3333aec1`.
+
+Estado de cierre y publicación futura: ver `CONTINUAR-SISTEMA-DE-CAMPO.md`.
