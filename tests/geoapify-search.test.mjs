@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createGeoapifySearchHandler } from '../worker/geoapify-search.mjs';
 
 const USER = { id: 'usuario-prueba' };
-const baseEnv = { GEOAPIFY_API_KEY: 'clave-simulada' };
+const baseEnv = { GEOAPIFY_API_KEY: 'clave-simulada', PLACES_RATE_LIMITER: { limit: async () => ({ success: true }) } };
 const request = (query = 'panaderia') => new Request(`https://prueba.invalid/api/places/search?q=${encodeURIComponent(query)}`);
 
 function geoResponse(features, status = 200) {
@@ -124,4 +124,17 @@ test('un fallo del proveedor no se presenta como resultado válido', async () =>
   const response = await handler(request(), baseEnv);
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { error: 'SEARCH_TEMPORARILY_UNAVAILABLE' });
+});
+
+test('sin límite configurado bloquea consumo del proveedor', async () => {
+ let calls=0;
+ const handler=createGeoapifySearchHandler({verifySession:async()=>USER,fetchImpl:async()=>{calls++;return geoResponse([]);}});
+ const response=await handler(request(),{GEOAPIFY_API_KEY:'simulada'});
+ assert.equal(response.status,503);assert.equal(calls,0);
+});
+test('un fallo de autenticación o JSON inválido devuelve error controlado', async () => {
+ const authFail=createGeoapifySearchHandler({verifySession:async()=>{throw Error('red');}});
+ assert.equal((await authFail(request(),baseEnv)).status,503);
+ const malformed=createGeoapifySearchHandler({verifySession:async()=>USER,fetchImpl:async()=>new Response('no json')});
+ assert.equal((await malformed(request(),baseEnv)).status,502);
 });

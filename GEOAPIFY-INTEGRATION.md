@@ -1,76 +1,47 @@
-# Preparación de Geoapify — Sistema de Campo
+# Sistema de Campo — prueba temporal
 
-Estado: código local, no publicado y sin llamadas reales.
+## Estado al 24 de octubre de 2026
 
-## Integración prevista
+Base solicitada: `d07577e95dc9927b180af9def047d3e4c0a3064d`.
+Se conserva también el avance posterior `a886afb4dab092181124d7043ca608fd910c699f`, encontrado en la rama original.
+Rama independiente: `work/anadir-parada-geoapify-fix-20261024`.
 
-- El navegador consulta `GET /api/places/search?q=...` con la sesión Supabase existente.
-- El Worker valida la sesión antes de aceptar la búsqueda.
-- La clave `GEOAPIFY_API_KEY` existe únicamente como secret del Worker temporal.
-- El Worker fuerza `countrycode:pr`, español, máximo de 8 resultados y valida además las coordenadas devueltas.
-- El binding opcional `PLACES_RATE_LIMITER` corta solicitudes antes de contactar al proveedor.
-- El frontend recibe el mismo contrato que utiliza el buscador ficticio, por lo que `Ir ahora` y `Añadir a pendientes` no cambian.
+Vista: https://sistema-campo-anadir-prueba.amelen0612.workers.dev/?verify=buttons
 
-## Límites propuestos para la prueba temporal
+La versión temporal usa puntos ficticios, almacenamiento local y un optimizador simulado. Los datos remotos de Supabase permanecen bloqueados. `index.html` de producción no se modifica.
 
-- Búsqueda explícita mediante botón; no consultar en cada pulsación.
-- Mínimo 3 y máximo 120 caracteres.
-- Máximo 8 resultados.
-- 30 búsquedas por minuto por usuario autenticado mediante Rate Limiting binding.
-- Caché de proveedor de 5 minutos para búsquedas repetidas.
-- El tablero de Geoapify conserva el límite diario exterior del plan contratado.
+## Cambios
 
-## Activación pendiente de autorización
+- Buscar, confirmar y añadir una parada a pendientes o navegar hacia ella con el flujo existente; también conserva Guardados y Coordenadas.
+- El indicador de siguiente parada consulta la misma selección que el botón, omitiendo visitadas y omitidas.
+- Volver a iniciar una ruta conserva su destino actual.
+- Insertar una parada conserva el destino por identidad, incluso durante el regreso final.
+- Recuperar la ruta temporal tras invalidarla conserva puntos, visitas, fotos y nuevas paradas; ya no vuelve a sembrar todos los puntos como pendientes.
+- Añadir un punto ya visitado conserva su estado. Deshacer visita continúa siendo una acción explícita.
+- Cerrar o reiniciar el buscador invalida respuestas anteriores.
+- El generador escapa el HTML incrustado para evitar cierres prematuros de script y la pantalla en blanco.
 
-1. Crear una cuenta Free y un proyecto en Geoapify.
-2. Crear la clave del proyecto sin activar un plan de pago.
-3. Guardarla como secret `GEOAPIFY_API_KEY` solo en el Worker temporal.
-4. Añadir el Rate Limiting binding únicamente al Worker temporal.
-5. Publicar una nueva versión del Worker temporal.
-6. Hacer una prueba acotada con hasta cinco búsquedas reales y revisar consumo.
+## Geoapify conectado en código, desactivado en el despliegue
 
-No se modifica `main`, producción, ORS, Supabase, rutas ni datos reales.
+El endpoint `/api/places/search` usa el handler compartido de `worker/geoapify-search.mjs` cuando se habilita explícitamente. No hay llamadas reales al proveedor en esta prueba.
 
-## Conexión mínima con el Worker temporal existente
+Para activarlo, después de autorización del usuario:
 
-El código completo del Worker temporal de Claude no forma parte de este repositorio. No debe reconstruirse. La vista temporal ya expone el punto de extensión `window.campoBuscarLugares`, que actualmente devuelve los ocho lugares ficticios.
+1. Disponer de una cuenta/proyecto y clave Geoapify autorizados; no crear ni contratar servicios automáticamente.
+2. Guardar `GEOAPIFY_API_KEY` como secret únicamente del Worker temporal.
+3. Configurar `SUPABASE_URL` y `SUPABASE_ANON_KEY` y el binding `PLACES_RATE_LIMITER` (30 solicitudes/60 segundos por usuario).
+4. Configurar `GEOAPIFY_ENABLED=true`. `?verify=buttons` utiliza una sesión ficticia sin token y no sustituye una sesión real para Geoapify; las pruebas reales deben usar la sesión existente fuera de ese modo.
+5. Realizar hasta cinco consultas reales autorizadas y revisar consumo.
 
-Cuando ese código esté disponible, la integración se limita a tres cambios controlados:
+El handler valida sesión contra Supabase Auth, exige límite de solicitudes, fuerza Puerto Rico y español, limita a ocho resultados y maneja fallos de red y JSON inválido. La clave no llega al navegador. No se permite continuar hacia el proveedor sin rate limiter. La búsqueda requiere acción explícita, entre 3 y 120 caracteres.
 
-1. Importar `handleGeoapifySearch` y dirigir únicamente `GET /api/places/search` hacia ese handler.
-2. Instalar `installGeoapifyPlaceSearch()` en la página principal, obteniendo el `access_token` de la sesión Supabase existente.
-3. Sustituir exclusivamente la función ficticia asignada a `window.campoBuscarLugares`; conservar sin cambios el modal, la confirmación, `Ir ahora`, `Añadir a pendientes` y la actualización de la ruta.
+## Construcción y comprobación
 
-Contrato conservado para cada resultado:
-
-```js
-{
-  provider: 'geoapify',
-  providerId: '...',
-  nombre: '...',
-  direccion: '...',
-  lat: 18.4,
-  lng: -66.07,
-  tipo: '...',
-  fuente: 'Geoapify · OpenStreetMap'
-}
+```sh
+node preview/construir-worker-geoapify-temporal.mjs
+node --test tests/*.test.mjs
 ```
 
-La ruta del endpoint debe evaluarse antes de servir el HTML general del Worker. Ninguna búsqueda debe ejecutarse al cargar la página: solamente después de una acción explícita del usuario.
+`preview/wrangler.jsonc` apunta exclusivamente al Worker temporal, sin rutas de producción y con Geoapify desactivado. El módulo generado importa el handler compartido; el despliegue debe incluir ambos módulos o empaquetarlos.
 
-## Correcciones pendientes de Ruta del Día
-
-Estas correcciones están identificadas, pero no implementadas en esta preparación:
-
-### Indicador de próxima parada
-
-- Calcularlo desde la primera parada pendiente del itinerario activo, no desde el índice original previo a reordenamientos.
-- Recalcular después de iniciar, visitar, omitir, retomar, añadir una parada y optimizar pendientes.
-- Mantener el mismo indicador después de cerrar Edge o regresar desde la aplicación de navegación.
-
-### Cambio automático de Visitada a Pendiente
-
-- No convertir una parada visitada a pendiente como efecto secundario de añadir u optimizar otras paradas.
-- Preservar `visitado` mediante un identificador estable de la parada, no por posición dentro del arreglo.
-- Solo permitir el cambio Visitada → Pendiente mediante la acción explícita de retomar/reabrir la parada.
-- Añadir regresiones que mezclen paradas visitadas, omitidas y nuevas antes y después de optimizar pendientes.
+Se verificó en navegador: búsqueda ficticia de farmacia, confirmación, añadir a pendientes, visita completada conservada tras recarga y cambio del control de regreso. Las pruebas automatizadas cubren recuperación, identidad del destino, reanudación, duplicados y errores del proveedor. No se ejecutaron consultas Geoapify ni optimización ORS reales.

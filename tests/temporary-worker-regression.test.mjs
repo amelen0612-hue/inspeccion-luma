@@ -62,7 +62,14 @@ test('la vista temporal mantiene bloqueados datos reales de Supabase', () => {
   assert.match(workerSource, /return bloqueado; \/\/ from, rpc, storage, channel, realtime, schema, rest y cualquier otro/);
 });
 
-test('la activación real exige flag, secret y sesión autenticada', () => {
-  assert.match(workerSource, /env\.GEOAPIFY_ENABLED==='true'&&env\.GEOAPIFY_API_KEY/);
-  assert.match(workerSource, /if\(!auth\.startsWith\('Bearer '\)\|\|!env\.SUPABASE_URL\|\|!env\.SUPABASE_ANON_KEY\)/);
+test('la activación real exige flag y el handler protegido compartido', () => {
+  assert.match(workerSource, /if\(env\.GEOAPIFY_ENABLED==='true'\)return handleGeoapifySearch/);
+});
+
+test('el HTML entregado no rompe el script que contiene las páginas embebidas', async () => {
+  const vm=await import('node:vm');
+  const html=await (await workerModule.default.fetch(new Request('https://preview.invalid/'),{})).text();
+  for(const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)) {
+    assert.doesNotThrow(()=>new vm.Script(match[1]));
+  }
 });

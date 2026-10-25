@@ -62,6 +62,7 @@ async function verifySupabaseSession(request, env, fetchImpl) {
       authorization: auth,
       apikey: env.SUPABASE_ANON_KEY,
     },
+    signal: AbortSignal.timeout(8000),
   });
   if (!response.ok) return null;
   const user = await response.json();
@@ -77,7 +78,9 @@ export function createGeoapifySearchHandler({ fetchImpl = fetch, verifySession =
   return async function handleGeoapifySearch(request, env) {
     if (request.method !== 'GET') return json({ error: 'METHOD_NOT_ALLOWED' }, 405, { allow: 'GET' });
 
-    const user = await verifySession(request, env, fetchImpl);
+    let user;
+    try { user = await verifySession(request, env, fetchImpl); }
+    catch { return json({ error: 'AUTH_TEMPORARILY_UNAVAILABLE' }, 503); }
     if (!user) return json({ error: 'UNAUTHORIZED' }, 401);
 
     if (!env.GEOAPIFY_API_KEY) {
@@ -89,7 +92,10 @@ export function createGeoapifySearchHandler({ fetchImpl = fetch, verifySession =
       return json({ error: 'INVALID_QUERY', minLength: 3, maxLength: MAX_QUERY_LENGTH }, 400);
     }
 
-    const rate = await consumeRateLimit(env, user.id);
+    if (!env.PLACES_RATE_LIMITER?.limit) return json({ error: 'RATE_LIMIT_NOT_CONFIGURED' }, 503);
+    let rate;
+    try { rate = await consumeRateLimit(env, user.id); }
+    catch { return json({ error: 'SEARCH_TEMPORARILY_UNAVAILABLE' }, 503); }
     if (!rate.success) return json({ error: 'RATE_LIMITED' }, 429, { 'retry-after': '60' });
 
     const upstream = new URL(GEOAPIFY_AUTOCOMPLETE);
@@ -106,6 +112,7 @@ export function createGeoapifySearchHandler({ fetchImpl = fetch, verifySession =
       response = await fetchImpl(upstream, {
         headers: { accept: 'application/geo+json, application/json' },
         cf: { cacheTtl: 300, cacheEverything: true },
+        signal: AbortSignal.timeout(8000),
       });
     } catch {
       return json({ error: 'SEARCH_TEMPORARILY_UNAVAILABLE' }, 503);
@@ -116,7 +123,10 @@ export function createGeoapifySearchHandler({ fetchImpl = fetch, verifySession =
       return json({ error: status === 429 ? 'PROVIDER_RATE_LIMITED' : 'PROVIDER_ERROR' }, status);
     }
 
-    const payload = await response.json();
+    let payload;
+    try { payload = await response.json(); }
+    catch { return json({ error: 'PROVIDER_ERROR' }, 502); }
+    if (!Array.isArray(payload?.features)) return json({ error: 'PROVIDER_ERROR' }, 502);
     const results = (Array.isArray(payload?.features) ? payload.features : [])
       .filter(feature => isPuertoRicoResult(feature?.properties))
       .slice(0, DEFAULT_LIMIT)

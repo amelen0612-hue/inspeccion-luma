@@ -38,6 +38,19 @@ const mockEnd = page.indexOf('  window.CAMPO_PREPARAR_RUTA_FICTICIA=', mockStart
 if (mockStart < 0 || mockEnd < 0) throw new Error('No se encontró el buscador ficticio original');
 page = page.slice(0, mockStart) + `  // Adaptador compatible con Geoapify. El Worker temporal responde simulaciones hasta activar explícitamente Geoapify.\n  window.campoBuscarLugares=async(texto)=>{\n    const headers={accept:'application/json'};\n    try{\n      const sesion=await window.campoSupabase?.auth?.getSession?.();\n      const token=sesion?.data?.session?.access_token;\n      if(token)headers.authorization='Bearer '+token;\n    }catch(e){}\n    const respuesta=await fetch('/api/places/search?q='+encodeURIComponent(String(texto||'').trim()),{headers,credentials:'same-origin'});\n    const cuerpo=await respuesta.json().catch(()=>({}));\n    if(!respuesta.ok)throw new Error(cuerpo.error||'No se pudo buscar el lugar');\n    return Array.isArray(cuerpo.results)?cuerpo.results:[];\n  };\n` + page.slice(mockEnd);
 
+
+// La ruta puede invalidarse por controles o nuevas paradas. Nunca reiniciar los puntos existentes.
+page = replaceExactly(page,
+  "      if(!nueva&&rutaUsable())return false;\n      localStorage.setItem('ruta_puntos',JSON.stringify(puntosFicticios()));",
+  `      if(!nueva&&rutaUsable())return false;
+      if(!nueva&&Array.isArray(leer('ruta_puntos'))){
+        const actuales=leer('ruta_puntos');
+        const pendientes=actuales.filter(p=>!p.visitado).map(p=>{const [lat,lng]=String(p.coord).split(',').map(Number);return {id:String(p.id),name:p.contador||'Parada',lat,lng};});
+        localStorage.setItem(KEY_RUTA,JSON.stringify({puntos:[oficina,...pendientes,oficina],tramo:0,pendientes:pendientes.map(p=>p.id),url:''}));
+        return true;
+      }
+      localStorage.setItem('ruta_puntos',JSON.stringify(puntosFicticios()));`, 'recuperación sin borrar visitas');
+
 const pageParts = extractPages(page);
 const pages = pageParts.pages;
 let route = pages.ruta;
@@ -50,8 +63,27 @@ const oldVisited = `      if(existente.visitado){deshacerVisitada(existente.id);
 const newVisited = `      if(existente.visitado){toast((existente.contador||'Esa parada')+' ya está visitada; se conserva en el historial');return;}\n      if(estaOmitida(rutaGuardada(),existente.id)){retomarParada(existente.id);return;}`;
 route = replaceExactly(route, oldVisited, newVisited, 'preservación de parada visitada');
 
+
+// Conservar la identidad del destino aunque se inserte antes del regreso.
+route = replaceExactly(route,
+  '  if(ruta.tramo>=fin)ruta.tramo=Math.max(0,fin-1);',
+  `  if(ruta.tramo>=fin){
+    const regreso=ruta.puntos.splice(fin+1,1)[0];
+    ruta.puntos.splice(fin,0,regreso);
+    ruta.puntos.push({...regreso});
+  }`, 'destino estable al insertar');
+// Al iniciar otra vez, continuar en la parada actual en lugar de retroceder.
+route = replaceExactly(route,
+  'const ruta=itinerarioORS(),indice=indiceSiguiente(ruta,0);abrirTramoORS',
+  'const ruta=itinerarioORS(),indice=ruta.tramo>0?ruta.tramo:indiceSiguiente(ruta,0);abrirTramoORS', 'reanudar ruta');
+// Una búsqueda invalidada no puede reaparecer al cerrar o volver a abrir el modal.
+route = replaceExactly(route, '  paradaCandidata=null;resultadosParada=[];', '  busquedaParadaId++;paradaCandidata=null;resultadosParada=[];', 'reinicio de búsqueda');
+route = replaceExactly(route, "function cerrarAnadirParada(){document", "function cerrarAnadirParada(){busquedaParadaId++;document", 'cancelación de búsqueda');
+route = replaceExactly(route, "  lista.replaceChildren();resultadosParada=[];", "  const turno=++busquedaParadaId;lista.replaceChildren();resultadosParada=[];", 'invalidar consulta anterior');
+route = replaceExactly(route, "  const turno=++busquedaParadaId;msg.textContent='Buscando…';", "  msg.textContent='Buscando…';", 'turno único');
+
 pages.ruta = route;
-page = page.slice(0, pageParts.start) + JSON.stringify(pages) + page.slice(pageParts.end);
+page = page.slice(0, pageParts.start) + JSON.stringify(pages).replace(/</g, '\\u003c') + page.slice(pageParts.end);
 worker = worker.slice(0, extracted.start) + JSON.stringify(page) + worker.slice(extracted.end);
 
 const provider = `
@@ -68,25 +100,11 @@ const LUGARES_SIMULADOS = [
 const normalizarBusqueda=(texto)=>String(texto||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase();
 function respuestaJson(body,status=200){return new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});}
 async function buscarLugaresTemporal(request,env){
+  if(request.method!=='GET')return new Response(null,{status:405,headers:{allow:'GET'}});
   const q=String(new URL(request.url).searchParams.get('q')||'').normalize('NFKC').replace(/\\s+/g,' ').trim();
   if(q.length<3||q.length>120)return respuestaJson({error:'INVALID_QUERY'},400);
   // Activación real bloqueada por defecto. Requiere flag y secret explícitos, además de sesión Supabase válida.
-  if(env.GEOAPIFY_ENABLED==='true'&&env.GEOAPIFY_API_KEY){
-    const auth=request.headers.get('authorization')||'';
-    if(!auth.startsWith('Bearer ')||!env.SUPABASE_URL||!env.SUPABASE_ANON_KEY)return respuestaJson({error:'UNAUTHORIZED'},401);
-    const usuario=await fetch(env.SUPABASE_URL+'/auth/v1/user',{headers:{authorization:auth,apikey:env.SUPABASE_ANON_KEY}});
-    if(!usuario.ok)return respuestaJson({error:'UNAUTHORIZED'},401);
-    const limite=env.PLACES_RATE_LIMITER?.limit?await env.PLACES_RATE_LIMITER.limit({key:'places:'+(await usuario.json()).id}):{success:true};
-    if(!limite.success)return respuestaJson({error:'RATE_LIMITED'},429);
-    const url=new URL('https://api.geoapify.com/v1/geocode/autocomplete');
-    Object.entries({text:q,filter:'countrycode:pr',bias:'proximity:-66.1057,18.2208',lang:'es',limit:'8',format:'geojson',apiKey:env.GEOAPIFY_API_KEY}).forEach(([k,v])=>url.searchParams.set(k,v));
-    const upstream=await fetch(url,{headers:{accept:'application/geo+json, application/json'}});
-    if(!upstream.ok)return respuestaJson({error:upstream.status===429?'PROVIDER_RATE_LIMITED':'PROVIDER_ERROR'},upstream.status===429?429:502);
-    const payload=await upstream.json();
-    const dentro=p=>String(p.country_code||'').toLowerCase()==='pr'&&Number(p.lat)>=17.5&&Number(p.lat)<=18.7&&Number(p.lon)>=-67.5&&Number(p.lon)<=-65;
-    const results=(Array.isArray(payload.features)?payload.features:[]).filter(f=>dentro(f.properties||{})).slice(0,8).map(f=>{const p=f.properties||{},direccion=p.formatted||[p.address_line1,p.address_line2].filter(Boolean).join(', ');return {provider:'geoapify',providerId:p.place_id||null,nombre:p.name||p.address_line1||direccion||'Lugar',direccion:direccion||'',lat:Number(p.lat),lng:Number(p.lon),tipo:p.result_type||'place',fuente:'Geoapify · OpenStreetMap'};});
-    return respuestaJson({results,attribution:'Powered by Geoapify · OpenStreetMap contributors'});
-  }
+  if(env.GEOAPIFY_ENABLED==='true')return handleGeoapifySearch(request,env);
   const terminos=normalizarBusqueda(q).split(/\\s+/).filter(Boolean);
   const results=LUGARES_SIMULADOS.filter(l=>terminos.every(t=>normalizarBusqueda(l.nombre+' '+l.direccion).includes(t))).map(l=>({...l,provider:'simulado',providerId:null,tipo:'place',fuente:'Lugares ficticios de prueba'}));
   return respuestaJson({results,attribution:'Datos ficticios de prueba'});
@@ -96,5 +114,6 @@ worker = replaceExactly(worker, 'const CABECERAS = {', provider + '\nconst CABEC
 worker = replaceExactly(worker, `    if (url.pathname !== '/' && url.pathname !== '/index.html') return new Response('No encontrado', { status: 404, headers: CABECERAS });`, `    if (url.pathname === '/api/places/search') return buscarLugaresTemporal(request, env);\n    if (url.pathname !== '/' && url.pathname !== '/index.html') return new Response('No encontrado', { status: 404, headers: CABECERAS });`, 'ruta de búsqueda');
 worker = replaceExactly(worker, '  async fetch(request) {', '  async fetch(request, env) {', 'entorno del Worker');
 
+worker = "import { handleGeoapifySearch } from '../worker/geoapify-search.mjs';\n" + worker;
 fs.writeFileSync(outputPath, worker.replace(/\n+$/, '') + '\n');
 console.log(JSON.stringify({ outputPath, bytes: Buffer.byteLength(worker), mode: 'simulado' }));
