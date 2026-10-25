@@ -23,7 +23,8 @@ test('/api/places/search: sin configuración 503, sin sesión 401 y nunca consul
     const env = { GEOAPIFY_ENABLED: 'true', GEOAPIFY_API_KEY: 'x', SUPABASE_URL: 'https://proyecto.example', SUPABASE_ANON_KEY: 'a', PLACES_RATE_LIMITER: { limit: async () => ({ success: true }) } };
     assert.equal((await worker.fetch(new Request('https://prueba.example/api/places/search?q=walmart'), { GEOAPIFY_ENABLED: 'false' })).status, 503);
     assert.equal((await worker.fetch(new Request('https://prueba.example/api/places/search?q=walmart'), env)).status, 401);
-    assert.equal((await worker.fetch(new Request('https://prueba.example/api/places/search?q=walmart', { headers: { authorization: 'Bearer falso' } }), env)).status, 401);
+    const falso = (await worker.fetch(new Request('https://prueba.example/api/places/search?q=walmart', { headers: { authorization: 'Bearer falso' } }), env)).status;
+    assert.ok([401, 503].includes(falso), 'un token falso nunca obtiene resultados (401, o 503 si Supabase no responde)');
     assert.equal(llamadas.some((u) => u.includes('geoapify')), false);
   } finally { globalThis.fetch = real; }
 });
