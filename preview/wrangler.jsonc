@@ -4,5 +4,15 @@
   "compatibility_date": "2026-09-08",
   "workers_dev": true,
   "routes": [],
-  "vars": { "GEOAPIFY_ENABLED": "false" }
+  "keep_vars": true,
+  "vars": {
+    "GEOAPIFY_ENABLED": "true",
+    "SUPABASE_URL": "https://sjpebxmeuyithcohoouj.supabase.co",
+    "SUPABASE_ANON_KEY": "sb_publishable_nba0BS-btuzUW4xfa4MHUA_i0y-bnyQ"
+  },
+  "ratelimits": [{
+    "name": "PLACES_RATE_LIMITER",
+    "namespace_id": "2026102501",
+    "simple": { "limit": 30, "period": 60 }
+  }]
 }

@@ -36,7 +36,18 @@ let page = extracted.page;
 const mockStart = page.indexOf('  // Buscador de lugares FICTICIO');
 const mockEnd = page.indexOf('  window.CAMPO_PREPARAR_RUTA_FICTICIA=', mockStart);
 if (mockStart < 0 || mockEnd < 0) throw new Error('No se encontró el buscador ficticio original');
-page = page.slice(0, mockStart) + `  // Adaptador compatible con Geoapify. El Worker temporal responde simulaciones hasta activar explícitamente Geoapify.\n  window.campoBuscarLugares=async(texto)=>{\n    const headers={accept:'application/json'};\n    try{\n      const sesion=await window.campoSupabase?.auth?.getSession?.();\n      const token=sesion?.data?.session?.access_token;\n      if(token)headers.authorization='Bearer '+token;\n    }catch(e){}\n    const respuesta=await fetch('/api/places/search?q='+encodeURIComponent(String(texto||'').trim()),{headers,credentials:'same-origin'});\n    const cuerpo=await respuesta.json().catch(()=>({}));\n    if(!respuesta.ok)throw new Error(cuerpo.error||'No se pudo buscar el lugar');\n    return Array.isArray(cuerpo.results)?cuerpo.results:[];\n  };\n` + page.slice(mockEnd);
+const clientAdapter = fs.readFileSync(path.join(dir, '../worker/geoapify-client-adapter.mjs'), 'utf8').replace('export function ', 'function ');
+page = page.slice(0, mockStart) + clientAdapter + `
+  installGeoapifyPlaceSearch({getAccessToken:async({refresh=false}={})=>{
+    const auth=window.campoSupabase?.auth;
+    if(!auth)return null;
+    const {data,error}=await (refresh?auth.refreshSession():auth.getSession());
+    if(error)throw new Error('Vuelve a iniciar sesión para buscar lugares.');
+    return data?.session?.access_token||null;
+  }});
+` + page.slice(mockEnd);
+page = replaceExactly(page, 'if(!verifyButtons)return target.auth;', 'if(!verifyButtons||window.CAMPO_GEOAPIFY_ACTIVO)return target.auth;', 'sesión real con Geoapify');
+
 
 
 // La ruta puede invalidarse por controles o nuevas paradas. Nunca reiniciar los puntos existentes.
@@ -82,6 +93,9 @@ route = replaceExactly(route, "function cerrarAnadirParada(){document", "functio
 route = replaceExactly(route, "  lista.replaceChildren();resultadosParada=[];", "  const turno=++busquedaParadaId;lista.replaceChildren();resultadosParada=[];", 'invalidar consulta anterior');
 route = replaceExactly(route, "  const turno=++busquedaParadaId;msg.textContent='Buscando…';", "  msg.textContent='Buscando…';", 'turno único');
 
+route = replaceExactly(route,
+  "msg.textContent='No se pudo buscar. Revisa la conexión o usa «Coordenadas».';",
+  "msg.textContent=e.message||'No se pudo buscar el lugar.';", 'error visible del buscador');
 pages.ruta = route;
 page = page.slice(0, pageParts.start) + JSON.stringify(pages).replace(/</g, '\\u003c') + page.slice(pageParts.end);
 worker = worker.slice(0, extracted.start) + JSON.stringify(page) + worker.slice(extracted.end);
@@ -114,6 +128,7 @@ worker = replaceExactly(worker, 'const CABECERAS = {', provider + '\nconst CABEC
 worker = replaceExactly(worker, `    if (url.pathname !== '/' && url.pathname !== '/index.html') return new Response('No encontrado', { status: 404, headers: CABECERAS });`, `    if (url.pathname === '/api/places/search') return buscarLugaresTemporal(request, env);\n    if (url.pathname !== '/' && url.pathname !== '/index.html') return new Response('No encontrado', { status: 404, headers: CABECERAS });`, 'ruta de búsqueda');
 worker = replaceExactly(worker, '  async fetch(request) {', '  async fetch(request, env) {', 'entorno del Worker');
 
+worker = replaceExactly(worker, 'return new Response(PAGINA, { headers:', `return new Response(PAGINA.replace('<head>', '<head><script>window.CAMPO_GEOAPIFY_ACTIVO='+JSON.stringify(env.GEOAPIFY_ENABLED==='true')+';</script>'), { headers:`, 'modo real del frontend');
 worker = "import { handleGeoapifySearch } from '../worker/geoapify-search.mjs';\n" + worker;
 fs.writeFileSync(outputPath, worker.replace(/\n+$/, '') + '\n');
-console.log(JSON.stringify({ outputPath, bytes: Buffer.byteLength(worker), mode: 'simulado' }));
+console.log(JSON.stringify({ outputPath, bytes: Buffer.byteLength(worker), mode: 'configured-at-runtime' }));

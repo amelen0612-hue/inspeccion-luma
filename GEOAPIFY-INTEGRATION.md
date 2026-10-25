@@ -1,47 +1,38 @@
-# Sistema de Campo — prueba temporal
+# Geoapify — Worker temporal
 
-## Estado al 24 de octubre de 2026
+Worker exclusivo: `sistema-campo-anadir-prueba`.
+Rama: `work/anadir-parada-geoapify-fix-20261024`.
+Producción y `main` no se modifican.
 
-Base solicitada: `d07577e95dc9927b180af9def047d3e4c0a3064d`.
-Se conserva también el avance posterior `a886afb4dab092181124d7043ca608fd910c699f`, encontrado en la rama original.
-Rama independiente: `work/anadir-parada-geoapify-fix-20261024`.
+## Conexión activa
 
-Vista: https://sistema-campo-anadir-prueba.amelen0612.workers.dev/?verify=buttons
+- `GEOAPIFY_ENABLED=true`.
+- `SUPABASE_URL` y la clave publicable del mismo proyecto que usa el frontend están configuradas en el Worker.
+- `PLACES_RATE_LIMITER`: namespace exclusivo `2026102501`, 30 solicitudes por 60 segundos por usuario autenticado.
+- `GEOAPIFY_API_KEY` se convirtió de Plain Text a Secret sin imprimir, guardar en disco ni publicar su valor. Esta conversión protege la configuración vigente; no rota la clave ni elimina versiones históricas.
+- El adaptador utiliza la sesión actual del cliente Supabase; envía `Authorization: Bearer …` al endpoint del mismo origen. Ante 401 intenta una renovación una sola vez.
+- El Worker valida el token mediante `/auth/v1/user` antes de consumir Geoapify. No acepta sesiones ficticias ni claves publicables como identidad de usuario.
+- Cuando Geoapify está activo, `?verify=buttons` también utiliza autenticación real. No se debe usar para saltar el inicio de sesión.
 
-La versión temporal usa puntos ficticios, almacenamiento local y un optimizador simulado. Los datos remotos de Supabase permanecen bloqueados. `index.html` de producción no se modifica.
+## Aislamiento conservado
 
-## Cambios
+Solo Auth puede contactar Supabase. Tablas, RPC, archivos, canales y otros datos remotos permanecen bloqueados por el proxy existente. ORS sigue usando exclusivamente el optimizador local. Las paradas y visitas de esta prueba permanecen en el almacenamiento local de este origen.
 
-- Buscar, confirmar y añadir una parada a pendientes o navegar hacia ella con el flujo existente; también conserva Guardados y Coordenadas.
-- El indicador de siguiente parada consulta la misma selección que el botón, omitiendo visitadas y omitidas.
-- Volver a iniciar una ruta conserva su destino actual.
-- Insertar una parada conserva el destino por identidad, incluso durante el regreso final.
-- Recuperar la ruta temporal tras invalidarla conserva puntos, visitas, fotos y nuevas paradas; ya no vuelve a sembrar todos los puntos como pendientes.
-- Añadir un punto ya visitado conserva su estado. Deshacer visita continúa siendo una acción explícita.
-- Cerrar o reiniciar el buscador invalida respuestas anteriores.
-- El generador escapa el HTML incrustado para evitar cierres prematuros de script y la pantalla en blanco.
+## Sustituir la clave sin compartirla en chat
 
-## Geoapify conectado en código, desactivado en el despliegue
+1. En el proyecto Geoapify existente, crear una nueva API key sin cambiar de plan.
+2. En Cloudflare, abrir Workers & Pages → `sistema-campo-anadir-prueba` → Settings → Variables and Secrets.
+3. Editar `GEOAPIFY_API_KEY`, elegir **Secret**, pegar allí la nueva clave y guardar/desplegar.
+4. Comprobar una búsqueda iniciando sesión en la vista temporal.
+5. Revocar la clave anterior en Geoapify. No compartir ninguna de las dos en chats, capturas, archivos o GitHub.
 
-El endpoint `/api/places/search` usa el handler compartido de `worker/geoapify-search.mjs` cuando se habilita explícitamente. No hay llamadas reales al proveedor en esta prueba.
+`preview/wrangler.jsonc` contiene solo valores públicos y preserva variables existentes. La clave Geoapify debe mantenerse siempre como Secret.
 
-Para activarlo, después de autorización del usuario:
-
-1. Disponer de una cuenta/proyecto y clave Geoapify autorizados; no crear ni contratar servicios automáticamente.
-2. Guardar `GEOAPIFY_API_KEY` como secret únicamente del Worker temporal.
-3. Configurar `SUPABASE_URL` y `SUPABASE_ANON_KEY` y el binding `PLACES_RATE_LIMITER` (30 solicitudes/60 segundos por usuario).
-4. Configurar `GEOAPIFY_ENABLED=true`. `?verify=buttons` utiliza una sesión ficticia sin token y no sustituye una sesión real para Geoapify; las pruebas reales deben usar la sesión existente fuera de ese modo.
-5. Realizar hasta cinco consultas reales autorizadas y revisar consumo.
-
-El handler valida sesión contra Supabase Auth, exige límite de solicitudes, fuerza Puerto Rico y español, limita a ocho resultados y maneja fallos de red y JSON inválido. La clave no llega al navegador. No se permite continuar hacia el proveedor sin rate limiter. La búsqueda requiere acción explícita, entre 3 y 120 caracteres.
-
-## Construcción y comprobación
+## Construcción y comprobación de la conexión
 
 ```sh
 node preview/construir-worker-geoapify-temporal.mjs
-node --test tests/*.test.mjs
+node --test tests/geoapify-session.test.mjs
 ```
 
-`preview/wrangler.jsonc` apunta exclusivamente al Worker temporal, sin rutas de producción y con Geoapify desactivado. El módulo generado importa el handler compartido; el despliegue debe incluir ambos módulos o empaquetarlos.
-
-Se verificó en navegador: búsqueda ficticia de farmacia, confirmación, añadir a pendientes, visita completada conservada tras recarga y cambio del control de regreso. Las pruebas automatizadas cubren recuperación, identidad del destino, reanudación, duplicados y errores del proveedor. No se ejecutaron consultas Geoapify ni optimización ORS reales.
+Pruebas específicas de transporte de sesión, renovación de token y conservación del aislamiento. No se repite la batería de lugares ficticios.

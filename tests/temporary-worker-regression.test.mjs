@@ -39,7 +39,8 @@ test('sin flag y sin clave nunca intenta consultar Geoapify', async () => {
 });
 
 test('el iframe consulta el adaptador y no conserva el buscador directo anterior', () => {
-  assert.match(workerSource, /fetch\('\/api\/places\/search\?q='/);
+  assert.match(workerSource, /installGeoapifyPlaceSearch/);
+  assert.match(workerSource, /getAccessToken/);
   assert.doesNotMatch(workerSource, /await new Promise\(r=>setTimeout\(r,350\)\)/);
 });
 
