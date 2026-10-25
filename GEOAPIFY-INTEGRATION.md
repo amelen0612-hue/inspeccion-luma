@@ -36,3 +36,9 @@ node --test tests/geoapify-session.test.mjs
 ```
 
 Pruebas específicas de transporte de sesión, renovación de token y conservación del aislamiento. No se repite la batería de lugares ficticios.
+
+## Verificación real completada
+
+En la vista temporal, con una sesión real iniciada por el usuario, se buscó **Walmart Cayey** desde «+ Añadir parada». El endpoint autenticado devolvió **Walmart Supercenter**, dirección en Cayey, PR 00737, coordenadas **18.122479, -66.133770**, fuente **Geoapify · OpenStreetMap**. Se abrió la confirmación del resultado; no se añadió una parada ni se abrió navegación. Una búsqueda real, sin guardar tokens o claves en registros, archivos o GitHub.
+
+Despliegue verificado: `105925ba1d354ecfbe1118b9dc4bc06b`.
