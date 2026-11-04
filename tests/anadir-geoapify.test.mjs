@@ -107,15 +107,15 @@ test('la página busca mediante la función «places-search» con la sesión de 
 });
 
 // ---------- lo demás no cambió ----------
-test('solo cambió la página Ruta: el resto del contenedor, las demás páginas y el optimizador son idénticos a producción', conProduccion, () => {
+test('solo cambió Ruta: contenedor y demás páginas intactos; solicitudORS admite la normalización circular probada aparte', conProduccion, () => {
   const antes = paginas(produccion);
   for (const k of Object.keys(antes)) if (k !== 'ruta') assert.equal(paginas(source)[k], antes[k], `la página ${k} no debe cambiar`);
   const sinPaginas = (t) => t.slice(0, t.indexOf('const PAGES=')) + t.slice(t.indexOf(';\nlet current='));
   assert.equal(sinPaginas(source), sinPaginas(produccion), 'el contenedor (sesión, autenticación, arranque, navegación) es idéntico');
   const nombres = [...antes.ruta.matchAll(/(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]);
   const cambiadas = nombres.filter((n) => extractFunction(antes.ruta, n) !== extractFunction(route, n));
-  assert.deepEqual(cambiadas.sort(), ['actualizarNavegacionORS', 'iniciarRutaORS', 'siguienteParadaORS'], 'ORS, Google Maps, Waze, Apple Maps, visitadas y progreso: sus funciones no cambiaron');
-  for (const n of ['abrirORS', 'solicitudORS', 'itinerarioORS', 'abrirTramoORS', 'urlNavegacionTramo', 'urlAppleMaps', 'irAParada', 'marcarVisitada', 'deshacerVisitada', 'omitirParada', 'retomarParada', 'volverAParadaActual', 'optimizarPendientes', 'ejecutarOptimizarPendientes', 'renderLista', 'sincronizarRuta', 'getPuntos', 'savePuntos', 'extremoRuta', 'coordenadasRuta'])
+  assert.deepEqual(cambiadas.sort(), ['actualizarNavegacionORS', 'iniciarRutaORS', 'siguienteParadaORS', 'solicitudORS'], 'solo las funciones autorizadas difieren de la referencia anterior a Añadir parada');
+  for (const n of ['abrirORS', 'itinerarioORS', 'abrirTramoORS', 'urlNavegacionTramo', 'urlAppleMaps', 'irAParada', 'marcarVisitada', 'deshacerVisitada', 'omitirParada', 'retomarParada', 'volverAParadaActual', 'optimizarPendientes', 'ejecutarOptimizarPendientes', 'renderLista', 'sincronizarRuta', 'getPuntos', 'savePuntos', 'extremoRuta', 'coordenadasRuta'])
     assert.equal(extractFunction(route, n), extractFunction(antes.ruta, n), `${n} cambió`);
 });
 
