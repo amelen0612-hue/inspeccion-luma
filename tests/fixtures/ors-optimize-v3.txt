@@ -1,0 +1,206 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
+const ALLOWED_ORIGINS = new Set([
+  "https://amelen0612-hue.github.io",
+  "http://localhost:8765",
+  "http://127.0.0.1:8765",
+  "http://localhost:8766",
+  "http://127.0.0.1:8766",
+]);
+
+function corsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const allowOrigin = ALLOWED_ORIGINS.has(origin) ? origin : "https://amelen0612-hue.github.io";
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
+
+function json(req: Request, body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders(req), "Content-Type": "application/json" },
+  });
+}
+
+type Stop = {
+  id: string;
+  name?: string;
+  lat: number;
+  lng: number;
+};
+
+function validStop(s: any): s is Stop {
+  return s &&
+    typeof s.id === "string" && s.id.length > 0 &&
+    Number.isFinite(Number(s.lat)) && Number.isFinite(Number(s.lng)) &&
+    Number(s.lat) >= -90 && Number(s.lat) <= 90 &&
+    Number(s.lng) >= -180 && Number(s.lng) <= 180;
+}
+
+Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders(req) });
+  }
+  if (req.method !== "POST") {
+    return json(req, { ok: false, message: "Método no permitido" }, 405);
+  }
+
+  const apiKey = Deno.env.get("ORS_API_KEY");
+  if (!apiKey) {
+    return json(req, { ok: false, code: "MISSING_ORS_KEY", message: "ORS_API_KEY no está configurada" }, 503);
+  }
+
+  let body: any;
+  try {
+    body = await req.json();
+  } catch {
+    return json(req, { ok: false, message: "JSON inválido" }, 400);
+  }
+
+  const rawStops = Array.isArray(body?.stops) ? body.stops : [];
+  const stops: Stop[] = rawStops
+    .filter(validStop)
+    .map((s: Stop) => ({ id: String(s.id), name: String(s.name || "Punto"), lat: Number(s.lat), lng: Number(s.lng) }));
+
+  if (stops.length < 2) {
+    return json(req, { ok: false, message: "Se necesitan al menos 2 puntos con coordenadas válidas" }, 400);
+  }
+  if (stops.length > 30) {
+    return json(req, { ok: false, message: "Sistema de Campo admite hasta 30 puntos por optimización" }, 400);
+  }
+
+  const byId = new Map(stops.map((s) => [s.id, s]));
+  const circular = Boolean(body?.circular);
+  const startId = body?.startId ? String(body.startId) : (body?.baseId ? String(body.baseId) : null);
+  const endId = body?.endId ? String(body.endId) : null;
+
+  let start: Stop | undefined = startId ? byId.get(startId) : undefined;
+  let end: Stop | undefined = endId ? byId.get(endId) : undefined;
+
+  if (startId && !start) return json(req, { ok: false, message: "No se encontró el punto de salida" }, 400);
+  if (endId && !end) return json(req, { ok: false, message: "No se encontró el punto de llegada" }, 400);
+
+  if (circular) {
+    if (!start) return json(req, { ok: false, message: "Selecciona el punto de salida para la ruta circular" }, 400);
+    end = start;
+  }
+
+  // Si no se especifica salida, conservamos el primer punto como salida fija.
+  if (!start) start = stops[0];
+
+  // Si no se especifica llegada, conservamos el último punto como llegada fija.
+  // En circular, end ya es igual a start.
+  if (!end) end = circular ? start : stops[stops.length - 1];
+
+  const fixedIds = new Set<string>([start.id, end.id]);
+  const jobs = stops
+    .filter((s) => !fixedIds.has(s.id))
+    .map((s, idx) => ({
+      id: idx + 1,
+      description: s.id,
+      location: [s.lng, s.lat],
+      service: 0,
+    }));
+
+  const optimizePayload = {
+    jobs,
+    vehicles: [{
+      id: 1,
+      profile: "driving-car",
+      start: [start.lng, start.lat],
+      end: [end.lng, end.lat],
+    }],
+  };
+
+  let optRes: Response;
+  try {
+    optRes = await fetch("https://api.heigit.org/vroom/v0", {
+      method: "POST",
+      headers: {
+        "Authorization": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(optimizePayload),
+    });
+  } catch (e) {
+    return json(req, { ok: false, message: `No se pudo contactar openrouteservice: ${e?.message || e}` }, 502);
+  }
+
+  const optText = await optRes.text();
+  let opt: any;
+  try { opt = JSON.parse(optText); } catch { opt = null; }
+
+  if (!optRes.ok || !opt) {
+    return json(req, {
+      ok: false,
+      code: "ORS_OPTIMIZATION_ERROR",
+      status: optRes.status,
+      message: opt?.error?.message || opt?.error || opt?.message || optText.slice(0, 500) || "Error de optimización",
+    }, 502);
+  }
+
+  if (!Array.isArray(opt.routes) || !opt.routes.length || !Array.isArray(opt.routes[0].steps)) {
+    return json(req, { ok: false, message: "openrouteservice no devolvió una ruta optimizada" }, 502);
+  }
+
+  const jobIdToStop = new Map<number, Stop>();
+  jobs.forEach((j, i) => jobIdToStop.set(j.id, stops.find((s) => s.id === j.description)!));
+
+  const ordered: Stop[] = [start];
+  for (const step of opt.routes[0].steps) {
+    if (step?.type === "job" && Number.isInteger(step.id)) {
+      const s = jobIdToStop.get(step.id);
+      if (s) ordered.push(s);
+    }
+  }
+  if (end.id !== start.id || circular) ordered.push(end);
+
+  const coordinates = ordered.map((s) => [s.lng, s.lat]);
+
+  let geometry: any = null;
+  let summary: any = null;
+  let directionsStatus: number | null = null;
+
+  try {
+    const dirRes = await fetch("https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson", {
+      method: "POST",
+      headers: {
+        "Authorization": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ coordinates, instructions: true }),
+    });
+    directionsStatus = dirRes.status;
+    const dir = await dirRes.json().catch(() => null);
+    if (dirRes.ok && dir?.features?.[0]) {
+      geometry = dir.features[0].geometry || null;
+      summary = dir.features[0].properties?.summary || null;
+    }
+  } catch {
+    // La optimización sigue siendo útil aunque falle el dibujo detallado.
+  }
+
+  return json(req, {
+    ok: true,
+    provider: "openrouteservice",
+    route: ordered.map((s, index) => ({
+      order: index,
+      id: s.id,
+      name: s.name || "Punto",
+      lat: s.lat,
+      lng: s.lng,
+      role: index === 0 ? "start" : (index === ordered.length - 1 ? "end" : "stop"),
+    })),
+    summary: summary || {
+      distance: opt.routes[0]?.distance ?? null,
+      duration: opt.routes[0]?.duration ?? null,
+    },
+    geometry,
+    directions_status: directionsStatus,
+    circular,
+  });
+});

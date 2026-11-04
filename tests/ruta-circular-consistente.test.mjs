@@ -15,7 +15,7 @@ function extract(text,name){
 }
 const office={lat:18.1167,lng:-66.1517};
 const stops=[
-  {id:101,contador:'Ramón — Guavate',coord:'18.135767,-66.100621',visitado:false},
+  {id:101,contador:'Ramón — Guavate',coord:'18.136767,-66.100621',visitado:false},
   {id:102,contador:'Feila — Doña Elena',coord:'18.261543,-66.22252',visitado:false},
   {id:103,contador:'Leila — Los Robles',coord:'18.122996,-66.232047',visitado:false},
   {id:104,contador:'Arnaldo — Sabanera',coord:'18.189022,-66.115197',visitado:false},
@@ -121,13 +121,20 @@ test('servicio caído o respuesta sin regreso avisa y no crea un itinerario fict
   }
 });
 
+test('si falla ORS con una ruta anterior, conserva esa instantánea y avisa; no calcula alternativa',async()=>{
+  const e=env();await e.run('abrirORS()');const before=e.data.get('ruta_ors_ultima');
+  assert.ok(before);e.context.rutaSupabase.functions.invoke=async()=>({data:null,error:{message:'offline'}});
+  await e.run('abrirORS()');assert.equal(e.data.get('ruta_ors_ultima'),before);
+  assert.ok(e.messages.at(-1).startsWith('⛔'));
+});
+
 test('24 circuitos de la matriz vial auditada: comparación de costos completos sin inventar tráfico',()=>{
-  const m=JSON.parse(fs.readFileSync(new URL('./fixtures/ruta-cayey-osrm.json',import.meta.url)));
+  const m=JSON.parse(fs.readFileSync(new URL('./fixtures/ruta-cayey-osrm-verificada.json',import.meta.url)));
   assert.equal(m.code,'Ok');assert.equal(m.durations.length,5);
   const cost=order=>{const r=[0,...order,0];return {seconds:r.slice(1).reduce((s,b,i)=>s+m.durations[r[i]][b],0),meters:r.slice(1).reduce((s,b,i)=>s+m.distances[r[i]][b],0)};};
   const all=permutations([1,2,3,4]).map(order=>({order,...cost(order)})).sort((a,b)=>a.seconds-b.seconds);
-  assert.equal(all.length,24);assert.deepEqual(all[0].order,[1,4,2,3]);assert.equal(all[0].seconds,8020.6);assert.equal(all[0].meters,103397.2);
-  assert.ok(Math.abs(cost([3,2,1,4]).seconds-8914.8)<1e-6);assert.ok(Math.abs(cost([3,2,4,1]).seconds-8040.4)<1e-6);
+  assert.equal(all.length,24);assert.deepEqual(all[0].order,[1,4,2,3]);assert.equal(all[0].seconds,7989.4);assert.equal(all[0].meters,103179.7);
+  assert.ok(Math.abs(cost([3,2,1,4]).seconds-8883.6)<1e-6);assert.ok(Math.abs(cost([3,2,4,1]).seconds-8009.2)<1e-6);
   assert.ok(cost([3,2,1,4]).meters>all[0].meters);
 });
 

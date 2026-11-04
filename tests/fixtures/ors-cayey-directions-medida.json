@@ -1,0 +1,1300 @@
+{
+  "provider": "ORS Directions via existing ors-optimize; NOT VROOM internal matrix",
+  "coords": [
+    [
+      18.1167,
+      -66.1517
+    ],
+    [
+      18.136767,
+      -66.100621
+    ],
+    [
+      18.261543,
+      -66.22252
+    ],
+    [
+      18.122996,
+      -66.232047
+    ],
+    [
+      18.189022,
+      -66.115197
+    ]
+  ],
+  "durations": [
+    [
+      0,
+      874.6,
+      2324.4,
+      1157.2,
+      1337.5
+    ],
+    [
+      868.8,
+      0,
+      2629,
+      1810.7,
+      1486.5
+    ],
+    [
+      2334.2,
+      2642,
+      0,
+      2466.5,
+      2300.2
+    ],
+    [
+      1157.4,
+      1808.9,
+      2462.1,
+      0,
+      2170.3
+    ],
+    [
+      1329.5,
+      1486.5,
+      2296.2,
+      2192.4,
+      0
+    ]
+  ],
+  "distances": [
+    [
+      0,
+      9833.4,
+      30967.6,
+      16382,
+      16200.7
+    ],
+    [
+      9830.7,
+      0,
+      35752.1,
+      25315.4,
+      16244.4
+    ],
+    [
+      30487.4,
+      33860.1,
+      0,
+      35962,
+      29103.4
+    ],
+    [
+      16381.4,
+      25285,
+      35939.7,
+      0,
+      30252.5
+    ],
+    [
+      16166.1,
+      16244.4,
+      29494.1,
+      30255.6,
+      0
+    ]
+  ],
+  "records": [
+    {
+      "from": 0,
+      "to": 1,
+      "status": 200,
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "target",
+            "lat": 18.136767,
+            "lng": -66.100621
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 9833.4,
+        "duration": 874.6
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 0,
+      "to": 2,
+      "timestamp": "2026-11-04T20:09:35.694527+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "target",
+            "lat": 18.261543,
+            "lng": -66.22252
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 30967.6,
+        "duration": 2324.4
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 0,
+      "to": 3,
+      "timestamp": "2026-11-04T20:09:43.383869+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "target",
+            "lat": 18.122996,
+            "lng": -66.232047
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16382,
+        "duration": 1157.2
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 0,
+      "to": 4,
+      "timestamp": "2026-11-04T20:09:47.900579+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.1167,
+            "lng": -66.1517
+          },
+          {
+            "id": "target",
+            "lat": 18.189022,
+            "lng": -66.115197
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16200.7,
+        "duration": 1337.5
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 1,
+      "to": 0,
+      "timestamp": "2026-11-04T20:09:52.452295+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "target",
+            "lat": 18.1167,
+            "lng": -66.1517
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 9830.7,
+        "duration": 868.8
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "timestamp": "2026-11-04T20:09:57.510041+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "target",
+            "lat": 18.261543,
+            "lng": -66.22252
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 35752.1,
+        "duration": 2629
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "timestamp": "2026-11-04T20:10:03.529371+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "target",
+            "lat": 18.122996,
+            "lng": -66.232047
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 25315.4,
+        "duration": 1810.7
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 1,
+      "to": 4,
+      "timestamp": "2026-11-04T20:10:07.661965+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.136767,
+            "lng": -66.100621
+          },
+          {
+            "id": "target",
+            "lat": 18.189022,
+            "lng": -66.115197
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16244.4,
+        "duration": 1486.5
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 2,
+      "to": 0,
+      "timestamp": "2026-11-04T20:10:12.072006+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "target",
+            "lat": 18.1167,
+            "lng": -66.1517
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 30487.4,
+        "duration": 2334.2
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "timestamp": "2026-11-04T20:10:17.145742+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "target",
+            "lat": 18.136767,
+            "lng": -66.100621
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 33860.1,
+        "duration": 2642
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "timestamp": "2026-11-04T20:10:21.830065+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "target",
+            "lat": 18.122996,
+            "lng": -66.232047
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 35962,
+        "duration": 2466.5
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "timestamp": "2026-11-04T20:10:27.143035+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.261543,
+            "lng": -66.22252
+          },
+          {
+            "id": "target",
+            "lat": 18.189022,
+            "lng": -66.115197
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 29103.4,
+        "duration": 2300.2
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 3,
+      "to": 0,
+      "timestamp": "2026-11-04T20:10:32.525658+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "target",
+            "lat": 18.1167,
+            "lng": -66.1517
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16381.4,
+        "duration": 1157.4
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 3,
+      "to": 1,
+      "timestamp": "2026-11-04T20:10:36.724632+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "target",
+            "lat": 18.136767,
+            "lng": -66.100621
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 25285,
+        "duration": 1808.9
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "timestamp": "2026-11-04T20:10:41.139530+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "target",
+            "lat": 18.261543,
+            "lng": -66.22252
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 35939.7,
+        "duration": 2462.1
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "timestamp": "2026-11-04T20:10:45.861417+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.122996,
+            "lng": -66.232047
+          },
+          {
+            "id": "target",
+            "lat": 18.189022,
+            "lng": -66.115197
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 30252.5,
+        "duration": 2170.3
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 4,
+      "to": 0,
+      "timestamp": "2026-11-04T20:10:50.412905+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "target",
+            "lat": 18.1167,
+            "lng": -66.1517
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16166.1,
+        "duration": 1329.5
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 4,
+      "to": 1,
+      "timestamp": "2026-11-04T20:10:54.672586+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "target",
+            "lat": 18.136767,
+            "lng": -66.100621
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 16244.4,
+        "duration": 1486.5
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 4,
+      "to": 2,
+      "timestamp": "2026-11-04T20:10:59.201790+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "target",
+            "lat": 18.261543,
+            "lng": -66.22252
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 29494.1,
+        "duration": 2296.2
+      },
+      "directions_status": 200
+    },
+    {
+      "from": 4,
+      "to": 3,
+      "timestamp": "2026-11-04T20:11:03.605221+00:00",
+      "request": {
+        "stops": [
+          {
+            "id": "source",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "origin-job",
+            "lat": 18.189022,
+            "lng": -66.115197
+          },
+          {
+            "id": "target",
+            "lat": 18.122996,
+            "lng": -66.232047
+          }
+        ],
+        "startId": "source",
+        "endId": "target",
+        "circular": false
+      },
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "source",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "origin-job",
+          "name": "Punto",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "target",
+          "name": "Punto",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 30255.6,
+        "duration": 2192.4
+      },
+      "directions_status": 200
+    }
+  ]
+}

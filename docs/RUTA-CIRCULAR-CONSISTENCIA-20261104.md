@@ -1,5 +1,7 @@
 # Ruta Circular — corrección de consistencia en rama de prueba
 
+Seguimiento posterior: [comprobación real de ORS](RUTA-CIRCULAR-ORS-REAL-20261104.md). Verifica respuestas reales y matriz de ORS Directions; corrige la latitud transcrita de Ramón a 18.136767. Las cifras OSRM de este documento son la evidencia inicial y se conservan como histórico.
+
 Base de producción: `11a856849e2080fef3d24fde28c06fc17d5f6120`.
 Rama: `prueba/ruta-circular-consistente-20261104`.
 Fecha: 4 de noviembre de 2026. Estado: preparada para revisión técnica, sin publicar.

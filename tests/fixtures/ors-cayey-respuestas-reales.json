@@ -1,0 +1,1843 @@
+{
+  "source_commit": "9b5c6017df3490d258ab9eca23c360b23cc5c9e4",
+  "backend_version": 3,
+  "coordinates_source": "Supabase ruta_puntos read-only; office confirmed by user",
+  "runs": [
+    {
+      "label": "original-order-01",
+      "timestamp": "2026-11-04T20:07:47.930515+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793729574714",
+        "1793794516310",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-02",
+      "timestamp": "2026-11-04T20:07:55.145825+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793729574714",
+        "1793794575766",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-03",
+      "timestamp": "2026-11-04T20:08:01.118153+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793794516310",
+        "1793729574714",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-04",
+      "timestamp": "2026-11-04T20:08:06.749225+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793794516310",
+        "1793794575766",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-05",
+      "timestamp": "2026-11-04T20:08:11.609819+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793794575766",
+        "1793729574714",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-06",
+      "timestamp": "2026-11-04T20:08:16.527740+00:00",
+      "input_ids": [
+        "1793729372688",
+        "1793794575766",
+        "1793794516310",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-07",
+      "timestamp": "2026-11-04T20:08:21.213692+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793729372688",
+        "1793794516310",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-08",
+      "timestamp": "2026-11-04T20:08:26.889169+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793729372688",
+        "1793794575766",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-09",
+      "timestamp": "2026-11-04T20:08:31.373231+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793794516310",
+        "1793729372688",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-10",
+      "timestamp": "2026-11-04T20:08:36.391279+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793794516310",
+        "1793794575766",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-11",
+      "timestamp": "2026-11-04T20:08:41.261338+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793794575766",
+        "1793729372688",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-12",
+      "timestamp": "2026-11-04T20:08:47.073498+00:00",
+      "input_ids": [
+        "1793729574714",
+        "1793794575766",
+        "1793794516310",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-13",
+      "timestamp": "2026-11-04T20:08:53.412385+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729372688",
+        "1793729574714",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-14",
+      "timestamp": "2026-11-04T20:08:58.276625+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729372688",
+        "1793794575766",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-15",
+      "timestamp": "2026-11-04T20:09:02.902463+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729574714",
+        "1793729372688",
+        "1793794575766"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-16",
+      "timestamp": "2026-11-04T20:09:07.402543+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729574714",
+        "1793794575766",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-17",
+      "timestamp": "2026-11-04T20:09:13.115843+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793794575766",
+        "1793729372688",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-18",
+      "timestamp": "2026-11-04T20:09:17.768334+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793794575766",
+        "1793729574714",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-19",
+      "timestamp": "2026-11-04T20:09:22.643983+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793729372688",
+        "1793729574714",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-20",
+      "timestamp": "2026-11-04T20:09:27.285491+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793729372688",
+        "1793794516310",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-21",
+      "timestamp": "2026-11-04T20:09:31.862801+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793729574714",
+        "1793729372688",
+        "1793794516310"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-22",
+      "timestamp": "2026-11-04T20:09:36.390911+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793729574714",
+        "1793794516310",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-23",
+      "timestamp": "2026-11-04T20:09:46.948955+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793794516310",
+        "1793729372688",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "original-order-24",
+      "timestamp": "2026-11-04T20:09:52.277016+00:00",
+      "input_ids": [
+        "1793794575766",
+        "1793794516310",
+        "1793729574714",
+        "1793729372688"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "canonical-repeat-1",
+      "timestamp": "2026-11-04T20:09:57.230316+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729372688",
+        "1793794575766",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "canonical-repeat-2",
+      "timestamp": "2026-11-04T20:10:04.004766+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729372688",
+        "1793794575766",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    },
+    {
+      "label": "canonical-repeat-3",
+      "timestamp": "2026-11-04T20:10:09.744052+00:00",
+      "input_ids": [
+        "1793794516310",
+        "1793729372688",
+        "1793794575766",
+        "1793729574714"
+      ],
+      "status": 200,
+      "ok": true,
+      "route": [
+        {
+          "order": 0,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "start"
+        },
+        {
+          "order": 1,
+          "id": "1793794516310",
+          "name": "Leila",
+          "lat": 18.122996,
+          "lng": -66.232047,
+          "role": "stop"
+        },
+        {
+          "order": 2,
+          "id": "1793729574714",
+          "name": "Feila",
+          "lat": 18.261543,
+          "lng": -66.22252,
+          "role": "stop"
+        },
+        {
+          "order": 3,
+          "id": "1793794575766",
+          "name": "Arnaldo",
+          "lat": 18.189022,
+          "lng": -66.115197,
+          "role": "stop"
+        },
+        {
+          "order": 4,
+          "id": "1793729372688",
+          "name": "Ramon",
+          "lat": 18.136767,
+          "lng": -66.100621,
+          "role": "stop"
+        },
+        {
+          "order": 5,
+          "id": "__ors_salida",
+          "name": "Oficina",
+          "lat": 18.1167,
+          "lng": -66.1517,
+          "role": "end"
+        }
+      ],
+      "summary": {
+        "distance": 107500.2,
+        "duration": 8274.8
+      },
+      "directions_status": 200,
+      "message": null
+    }
+  ]
+}
